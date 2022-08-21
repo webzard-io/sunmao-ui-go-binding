@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sunmao Binding</title>
+    <script>
+      let options = {
+        application: {
+          kind: "Application",
+          version: "example/v1",
+          metadata: {
+            name: "empty",
+          },
+          spec: {
+            components: [],
+          },
+        },
+        wsUrl: "ws://localhost:8999",
+        reloadWhenWsDisconnected: true,
+        handlers: [],
+      };
+      /*<!--*/
+      /* APPLICATION */
+      /*-->*/
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      import { renderApp } from "./src/main.tsx";
+      renderApp(options);
+    </script>
+  </body>
+</html>
