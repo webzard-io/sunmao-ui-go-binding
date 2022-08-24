@@ -18,9 +18,10 @@ type Runtime struct {
 	appBuilder               *sunmao.AppBuilder
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message) error
+	uiDir                    string
 }
 
-func New() *Runtime {
+func New(uiDir string) *Runtime {
 	e := echo.New()
 
 	return &Runtime{
@@ -28,6 +29,7 @@ func New() *Runtime {
 		conns:                    map[int]*websocket.Conn{},
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message) error{},
+		uiDir:                    uiDir,
 	}
 }
 
@@ -40,9 +42,9 @@ func (r *Runtime) Run() {
 		log.Fatalln("please load app before run")
 	}
 
-	r.e.Static("/assets", "ui/dist/assets")
+	r.e.Static("/assets", fmt.Sprintf("%v/dist/assets", r.uiDir))
 	r.e.GET("/", func(c echo.Context) error {
-		buf, err := os.ReadFile("ui/dist/index.html")
+		buf, err := os.ReadFile(fmt.Sprintf("%v/dist/index.html", r.uiDir))
 		if err != nil {
 			return err
 		}

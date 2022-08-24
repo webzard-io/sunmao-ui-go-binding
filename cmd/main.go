@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// init the runtime
-	r := runtime.New()
+	r := runtime.New("ui")
 	// init an App builder, use a lib
 	b := sunmao.NewChakraUIApp()
 
