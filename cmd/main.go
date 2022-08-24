@@ -3,8 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Yuyz0112/sunmao-ui-go-binding/pkg/runtime"
-	"github.com/Yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 	"math/rand"
 	"os"
 	"time"

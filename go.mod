@@ -1,4 +1,4 @@
-module github.com/Yuyz0112/sunmao-ui-go-binding
+module github.com/yuyz0112/sunmao-ui-go-binding
 
 go 1.18
 
