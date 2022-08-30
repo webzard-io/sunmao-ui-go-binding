@@ -82,7 +82,7 @@ func (r *Runtime) Run() {
 
 		html := strings.Replace(string(buf),
 			"/* APPLICATION */",
-			fmt.Sprintf("options = %v", string((optionsBuf))), 1)
+			fmt.Sprintf("options = Object.assign(options, %v)", string(optionsBuf)), 1)
 		return c.HTML(http.StatusOK, html)
 	})
 

@@ -167,6 +167,13 @@ func (b *InnerComponentBuilder[K]) Style(styleSlot string, css string) K {
 	return b.inner
 }
 
+func (b *InnerComponentBuilder[K]) Hidden(when string) K {
+	b._Trait(b.appBuilder.NewTrait().Type("core/v1/hidden").Properties(map[string]interface{}{
+		"hidden": when,
+	}))
+	return b.inner
+}
+
 // Trait
 
 type BaseTraitBuilder interface {
@@ -342,5 +349,25 @@ func (b *ChakraButtonComponentBuilder) OnClick(serverHandler *ServerHandler) *Ch
 			},
 		},
 	}))
+	return b
+}
+
+type ChakraLinkComponentBuilder struct {
+	*InnerComponentBuilder[*ChakraLinkComponentBuilder]
+}
+
+func (b *ChakraUIAppBuilder) NewLink() *ChakraLinkComponentBuilder {
+	t := &ChakraLinkComponentBuilder{
+		InnerComponentBuilder: newInnerComponent[*ChakraLinkComponentBuilder](b.AppBuilder),
+	}
+	t.inner = t
+	return t.Type("chakra_ui/v1/link")
+}
+
+func (b *ChakraLinkComponentBuilder) Content(value string) *ChakraLinkComponentBuilder {
+	b.Properties(map[string]interface{}{
+		"text": map[string]interface{}{
+			"raw": value,
+		}})
 	return b
 }
