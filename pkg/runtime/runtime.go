@@ -19,9 +19,10 @@ type Runtime struct {
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message) error
 	uiDir                    string
+	storeCh                  chan map[string]any
 }
 
-func New(uiDir string) *Runtime {
+func New(uiDir string, storeCh chan map[string]any) *Runtime {
 	e := echo.New()
 
 	return &Runtime{
@@ -30,12 +31,20 @@ func New(uiDir string) *Runtime {
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message) error{},
 		uiDir:                    uiDir,
+		storeCh:                  storeCh,
 	}
 }
 
 var (
 	upgrader = websocket.Upgrader{}
 )
+
+type Message struct {
+	Type    string         `json:"type"`
+	Handler string         `json:"handler"`
+	Params  any            `json:"params"`
+	Store   map[string]any `json:"store"`
+}
 
 func (r *Runtime) Run() {
 	if r.appBuilder == nil {
@@ -63,6 +72,7 @@ func (r *Runtime) Run() {
 		if err != nil {
 			return err
 		}
+
 		html := strings.Replace(string(buf),
 			"/* APPLICATION */",
 			fmt.Sprintf("options = %v", string((optionsBuf))), 1)
@@ -70,6 +80,7 @@ func (r *Runtime) Run() {
 	})
 
 	connId := 0
+
 	r.e.GET("/ws", func(c echo.Context) error {
 		ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 		if err != nil {
@@ -87,27 +98,32 @@ func (r *Runtime) Run() {
 			if err != nil {
 				c.Logger().Error(err)
 			}
+
 			msg := &Message{}
+
 			err = json.Unmarshal(msgBytes, msg)
 			if err != nil {
 				// ignore
 			}
+
 			if msg.Type == "Action" {
 				handler, ok := r.handlers[msg.Handler]
 				if ok {
 					handler(msg)
 				}
 			}
+
+			if msg.Type == "StoreChange" && msg.Store != nil {
+				select {
+				case r.storeCh <- msg.Store:
+				default:
+
+				}
+			}
 		}
 	})
 
 	r.e.Logger.Fatal(r.e.Start(":8999"))
-}
-
-type Message struct {
-	Type    string `json:"type"`
-	Handler string `json:"handler"`
-	Params  any    `json:"params"`
 }
 
 func (r *Runtime) LoadApp(builder *sunmao.AppBuilder) error {

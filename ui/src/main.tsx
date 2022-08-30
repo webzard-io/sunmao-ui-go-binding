@@ -27,7 +27,14 @@ export function renderApp(options: Options) {
     <React.StrictMode>
       <App
         application={application}
-        onStoreChange={() => {}}
+        onStoreChange={(store) => {
+          ws.send(
+            JSON.stringify({
+              type: "StoreChange",
+              store,
+            })
+          );
+        }}
         ws={ws}
         handlers={handlers}
       />
