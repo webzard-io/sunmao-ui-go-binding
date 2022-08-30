@@ -21,6 +21,7 @@ type Runtime struct {
 	uiDir                    string
 	store                    map[string]any
 	storeCh                  chan map[string]any
+	storeHandlers            []func(s map[string]any) error
 }
 
 func New(uiDir string) *Runtime {
@@ -38,15 +39,6 @@ func New(uiDir string) *Runtime {
 		storeCh:                  storeCh,
 		store:                    store,
 	}
-
-	go func() {
-		for {
-			select {
-			case s := <-storeCh:
-				r.store = s
-			}
-		}
-	}()
 
 	return r
 }
@@ -139,6 +131,18 @@ func (r *Runtime) Run() {
 		}
 	})
 
+	go func() {
+		for {
+			select {
+			case s := <-r.storeCh:
+				r.store = s
+				for _, h := range r.storeHandlers {
+					h(s)
+				}
+			}
+		}
+	}()
+
 	defer func() {
 		close(r.storeCh)
 	}()
@@ -181,8 +185,8 @@ func (r *Runtime) GetStore() map[string]any {
 	return r.store
 }
 
-func (r *Runtime) GetStoreCh() chan map[string]any {
-	return r.storeCh
+func (r *Runtime) HandleStore(fn func(s map[string]any) error) {
+	r.storeHandlers = append(r.storeHandlers, fn)
 }
 
 type ServerState struct {

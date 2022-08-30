@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
-	"math/rand"
 	"os"
 	"time"
 )
@@ -67,18 +66,23 @@ func main() {
 		for {
 			time.Sleep(1 * time.Second)
 			// update state
-			myState.SetState(&MyState{Random: rand.Int()})
+			//myState.SetState(&MyState{Random: rand.Int()})
 
 			// call any UI's method like an API
-			r.Execute(&runtime.ExecuteTarget{
-				Id:     "my_input",
-				Method: "setInputValue",
-				Parameters: map[string]interface{}{
-					"value": time.Now().Format(time.UnixDate),
-				},
-			})
+			//r.Execute(&runtime.ExecuteTarget{
+			//	Id:     "my_input",
+			//	Method: "setInputValue",
+			//	Parameters: map[string]interface{}{
+			//		"value": time.Now().Format(time.UnixDate),
+			//	},
+			//})
 		}
 	}()
+
+	r.HandleStore(func(s map[string]any) error {
+		fmt.Println(s)
+		return nil
+	})
 
 	// add any server function as an API
 	r.Handle("debug", func(m *runtime.Message) error {
