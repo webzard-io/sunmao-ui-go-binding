@@ -11,22 +11,8 @@ import (
 )
 
 func main() {
-	var store map[string]any
-	storeCh := make(chan map[string]any)
-
-	go func() {
-		for {
-			select {
-			case s := <-storeCh:
-				store = s
-			}
-		}
-	}()
-
-	defer close(storeCh)
-
 	// init the runtime
-	r := runtime.New("ui", storeCh)
+	r := runtime.New("ui")
 	// init an App builder, use a lib
 	b := sunmao.NewChakraUIApp()
 
@@ -96,12 +82,16 @@ func main() {
 
 	// add any server function as an API
 	r.Handle("debug", func(m *runtime.Message) error {
+		store := r.GetStore()
+
 		type Input struct {
 			Value string `json:"value"`
 		}
 		var input *Input
+
 		jsonData, _ := json.Marshal(store["my_input"])
-		_ = json.Unmarshal([]byte(jsonData), &input)
+		_ = json.Unmarshal(jsonData, &input)
+
 		fmt.Println("debug >", input)
 		return nil
 	})

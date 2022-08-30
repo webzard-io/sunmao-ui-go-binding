@@ -19,20 +19,36 @@ type Runtime struct {
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message) error
 	uiDir                    string
+	store                    map[string]any
 	storeCh                  chan map[string]any
 }
 
-func New(uiDir string, storeCh chan map[string]any) *Runtime {
+func New(uiDir string) *Runtime {
 	e := echo.New()
 
-	return &Runtime{
+	var store map[string]any
+	storeCh := make(chan map[string]any)
+
+	r := &Runtime{
 		e:                        e,
 		conns:                    map[int]*websocket.Conn{},
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message) error{},
 		uiDir:                    uiDir,
 		storeCh:                  storeCh,
+		store:                    store,
 	}
+
+	go func() {
+		for {
+			select {
+			case s := <-storeCh:
+				r.store = s
+			}
+		}
+	}()
+
+	return r
 }
 
 var (
@@ -123,6 +139,10 @@ func (r *Runtime) Run() {
 		}
 	})
 
+	defer func() {
+		close(r.storeCh)
+	}()
+
 	r.e.Logger.Fatal(r.e.Start(":8999"))
 }
 
@@ -155,6 +175,10 @@ func (r *Runtime) Execute(target *ExecuteTarget) error {
 		ws.WriteMessage(websocket.TextMessage, msg)
 	}
 	return nil
+}
+
+func (r *Runtime) GetStore() map[string]any {
+	return r.store
 }
 
 type ServerState struct {
