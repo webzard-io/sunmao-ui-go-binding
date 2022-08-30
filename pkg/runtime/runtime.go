@@ -74,7 +74,6 @@ func (r *Runtime) Run() {
 		optionsBuf, err := json.Marshal(map[string]interface{}{
 			"application":              r.appBuilder.ValueOf(),
 			"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
-			"wsUrl":                    "ws://localhost:8999/ws",
 			"handlers":                 handlers,
 		})
 		if err != nil {
