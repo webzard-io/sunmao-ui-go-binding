@@ -181,6 +181,10 @@ func (r *Runtime) GetStore() map[string]any {
 	return r.store
 }
 
+func (r *Runtime) GetStoreCh() chan map[string]any {
+	return r.storeCh
+}
+
 type ServerState struct {
 	r         *Runtime
 	initState any
