@@ -200,6 +200,13 @@ func (b *TraitBuilder) Properties(properties map[string]interface{}) *TraitBuild
 	return b
 }
 
+// Binding
+
+type ServerHandler struct {
+	Name       string `json:"name"`
+	Parameters any    `json:"parameters"`
+}
+
 // layer 2
 
 type StackComponentBuilder struct {
@@ -235,6 +242,8 @@ func (b *TextComponentBuilder) Content(value string) *TextComponentBuilder {
 }
 
 // layer 3
+
+// chakra-ui
 
 type ChakraUIAppBuilder struct {
 	*AppBuilder
@@ -331,11 +340,6 @@ func (b *ChakraButtonComponentBuilder) Content(value string) *ChakraButtonCompon
 	return b
 }
 
-type ServerHandler struct {
-	Name       string `json:"name"`
-	Parameters any    `json:"parameters"`
-}
-
 func (b *ChakraButtonComponentBuilder) OnClick(serverHandler *ServerHandler) *ChakraButtonComponentBuilder {
 	b._Trait(b.appBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
 		"handlers": []map[string]interface{}{
@@ -369,5 +373,63 @@ func (b *ChakraLinkComponentBuilder) Content(value string) *ChakraLinkComponentB
 		"text": map[string]interface{}{
 			"raw": value,
 		}})
+	return b
+}
+
+// arco-design
+
+type ArcoAppBuilder struct {
+	*AppBuilder
+}
+
+func NewArcoApp() *ArcoAppBuilder {
+	b := &ArcoAppBuilder{
+		AppBuilder: NewApp(),
+	}
+	return b
+}
+
+type ArcoTableComponentBuilder struct {
+	*InnerComponentBuilder[*ArcoTableComponentBuilder]
+}
+
+func (b *ArcoAppBuilder) NewTable() *ArcoTableComponentBuilder {
+	t := &ArcoTableComponentBuilder{
+		InnerComponentBuilder: newInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
+	}
+	t.inner = t
+	return t.Type("arco/v1/table").Properties(map[string]interface{}{
+		"pagination": map[string]interface{}{
+			"enablePagination": true,
+			"pageSize":         20,
+		},
+		"rowKey":  "name",
+		"data":    []interface{}{},
+		"columns": []interface{}{},
+	})
+}
+
+func (b *ArcoTableComponentBuilder) Data(data any) *ArcoTableComponentBuilder {
+	b.Properties(map[string]interface{}{
+		"data": data,
+	})
+	return b
+}
+
+type ArcoTableColumn struct {
+	Title        string `json:"title"`
+	DataIndex    string `json:"dataIndex"`
+	Type         string `json:"type,omitempty"`
+	Sorter       bool   `json:"sorter"`
+	Filter       bool   `json:"filter"`
+	DisplayValue string `json:"displayValue,omitempty"`
+}
+
+func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableComponentBuilder {
+	columns := b.ValueOf().Properties["columns"].([]interface{})
+	columns = append(columns, column)
+	b.Properties(map[string]interface{}{
+		"columns": columns,
+	})
 	return b
 }

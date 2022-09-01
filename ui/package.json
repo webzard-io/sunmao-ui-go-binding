@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sunmao-ui/arco-lib": "^0.3.4",
     "@sunmao-ui/chakra-ui-lib": "^0.5.5-alpha.2",
     "@sunmao-ui/runtime": "^0.7.4-alpha.1",
     "react": "^17.0.0",

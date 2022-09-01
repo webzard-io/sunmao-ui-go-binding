@@ -15,6 +15,8 @@ func main() {
 	// init an App builder, use a lib
 	b := sunmao.NewChakraUIApp()
 
+	arcoB := sunmao.NewArcoApp()
+
 	// build some UI, some CSS is good
 	// more UI
 	b.Component(b.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
@@ -42,15 +44,17 @@ func main() {
 		})
 	}
 
-	b.Component(b.NewTable().Data(data).Column(&sunmao.ChakraTableColumn{
-		Key:   "name",
-		Title: "Name",
-	}).Column(&sunmao.ChakraTableColumn{
-		Key:   "size",
-		Title: "File Size",
-	}).Column(&sunmao.ChakraTableColumn{
-		Key:   "modTime",
-		Title: "Modify Time",
+	b.Component(arcoB.NewTable().Data(data).Column(&sunmao.ArcoTableColumn{
+		DataIndex:    "name",
+		Title:        "Name",
+		Type:         "link",
+		DisplayValue: "{{ $listItem.name }} - {{ $listItem.size }}",
+	}).Column(&sunmao.ArcoTableColumn{
+		DataIndex: "size",
+		Title:     "File Size",
+	}).Column(&sunmao.ArcoTableColumn{
+		DataIndex: "modTime",
+		Title:     "Modify Time",
 	}))
 
 	// use server push real-time data

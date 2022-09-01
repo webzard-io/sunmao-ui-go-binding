@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { implementUtilMethod, initSunmaoUI, watch } from "@sunmao-ui/runtime";
 import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
+import { ArcoDesignLib } from "@sunmao-ui/arco-lib";
+import "@sunmao-ui/arco-lib/dist/index.css";
 
 type Props = {
   application: any;
@@ -25,6 +27,7 @@ function App(props: Props) {
   } = initSunmaoUI({
     libs: [
       sunmaoChakraUILib,
+      ArcoDesignLib,
       {
         utilMethods: [
           () => {
