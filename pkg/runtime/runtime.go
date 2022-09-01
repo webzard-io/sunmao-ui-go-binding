@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/websocket"
 	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 	"log"
 	"net/http"
@@ -59,7 +60,10 @@ func (r *Runtime) Run() {
 		log.Fatalln("please load app before run")
 	}
 
+	r.e.Use(middleware.Gzip())
+
 	r.e.Static("/assets", fmt.Sprintf("%v/dist/assets", r.uiDir))
+
 	r.e.GET("/", func(c echo.Context) error {
 		buf, err := os.ReadFile(fmt.Sprintf("%v/dist/index.html", r.uiDir))
 		if err != nil {
