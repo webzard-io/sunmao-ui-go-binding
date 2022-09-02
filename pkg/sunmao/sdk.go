@@ -2,6 +2,7 @@ package sunmao
 
 import (
 	"fmt"
+
 	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
@@ -430,6 +431,40 @@ func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableCo
 	columns = append(columns, column)
 	b.Properties(map[string]interface{}{
 		"columns": columns,
+	})
+	return b
+}
+
+type ArcoTabsComponentBuilder struct {
+	*InnerComponentBuilder[*ArcoTabsComponentBuilder]
+}
+
+func (b *ArcoAppBuilder) NewTabs() *ArcoTabsComponentBuilder {
+	t := &ArcoTabsComponentBuilder{
+		InnerComponentBuilder: newInnerComponent[*ArcoTabsComponentBuilder](b.AppBuilder),
+	}
+	t.inner = t
+	return t.Type("arco/v1/tabs").Properties(map[string]interface{}{
+		"type":                          "line",
+		"defaultActiveTab":              0,
+		"tabPosition":                   "top",
+		"size":                          "default",
+		"updateWhenDefaultValueChanges": false,
+		"tabs":                          []any{},
+	})
+}
+
+type ArcoTabsTab struct {
+	Title         string `json:"title"`
+	Hidden        bool   `json:"hidden"`
+	DestroyOnHide bool   `json:"destroyOnHide"`
+}
+
+func (b *ArcoTabsComponentBuilder) Tab(tab *ArcoTabsTab) *ArcoTabsComponentBuilder {
+	tabs := b.ValueOf().Properties["tabs"].([]any)
+	tabs = append(tabs, tab)
+	b.Properties(map[string]interface{}{
+		"tabs": tabs,
 	})
 	return b
 }

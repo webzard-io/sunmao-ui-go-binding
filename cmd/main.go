@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 	"os"
 	"time"
+
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
 func main() {
@@ -44,6 +45,11 @@ func main() {
 		})
 	}
 
+	b.Component(arcoB.NewTabs().Id("tabs").
+		Tab(&sunmao.ArcoTabsTab{Title: "Tab 1"}).
+		Tab(&sunmao.ArcoTabsTab{Title: "Tab 2"}).
+		Tab(&sunmao.ArcoTabsTab{Title: "Tab 3"}))
+
 	b.Component(arcoB.NewTable().Data(data).Column(&sunmao.ArcoTableColumn{
 		DataIndex:    "name",
 		Title:        "Name",
@@ -55,7 +61,7 @@ func main() {
 	}).Column(&sunmao.ArcoTableColumn{
 		DataIndex: "modTime",
 		Title:     "Modify Time",
-	}))
+	}).Hidden("{{ tabs.activeTab != 0 }}"))
 
 	// use server push real-time data
 	type MyState struct {
