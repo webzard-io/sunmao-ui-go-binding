@@ -18,11 +18,11 @@ type Runtime struct {
 	conns                    map[int]*websocket.Conn
 	appBuilder               *sunmao.AppBuilder
 	reloadWhenWsDisconnected bool
-	handlers                 map[string]func(m *Message) error
+	handlers                 map[string]func(m *Message, connId int) error
 	uiDir                    string
 	store                    map[string]any
 	storeCh                  chan map[string]any
-	storeHandlers            []func(s map[string]any) error
+	storeHandlers            []func(s map[string]any, connId int) error
 }
 
 func New(uiDir string) *Runtime {
@@ -35,7 +35,7 @@ func New(uiDir string) *Runtime {
 		e:                        e,
 		conns:                    map[int]*websocket.Conn{},
 		reloadWhenWsDisconnected: true,
-		handlers:                 map[string]func(m *Message) error{},
+		handlers:                 map[string]func(m *Message, connId int) error{},
 		uiDir:                    uiDir,
 		storeCh:                  storeCh,
 		store:                    store,
@@ -120,7 +120,7 @@ func (r *Runtime) Run() {
 			if msg.Type == "Action" {
 				handler, ok := r.handlers[msg.Handler]
 				if ok {
-					handler(msg)
+					handler(msg, connId)
 				}
 			}
 
@@ -140,7 +140,7 @@ func (r *Runtime) Run() {
 			case s := <-r.storeCh:
 				r.store = s
 				for _, h := range r.storeHandlers {
-					h(s)
+					h(s, connId)
 				}
 			}
 		}
@@ -158,7 +158,7 @@ func (r *Runtime) LoadApp(builder *sunmao.AppBuilder) error {
 	return nil
 }
 
-func (r *Runtime) Handle(handler string, fn func(m *Message) error) {
+func (r *Runtime) Handle(handler string, fn func(m *Message, connId int) error) {
 	r.handlers[handler] = fn
 }
 
@@ -168,8 +168,12 @@ type ExecuteTarget struct {
 	Parameters any
 }
 
-func (r *Runtime) Execute(target *ExecuteTarget) error {
-	for _, ws := range r.conns {
+// maybe this is a bad idea, but currently we let connId == nil to represent broadcasting
+func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
+	for id, ws := range r.conns {
+		if connId != nil && id != *connId {
+			continue
+		}
 		msg, err := json.Marshal(map[string]interface{}{
 			"type":        "UiMethod",
 			"componentId": target.Id,
@@ -188,7 +192,7 @@ func (r *Runtime) GetStore() map[string]any {
 	return r.store
 }
 
-func (r *Runtime) HandleStore(fn func(s map[string]any) error) {
+func (r *Runtime) HandleStore(fn func(s map[string]any, connId int) error) {
 	r.storeHandlers = append(r.storeHandlers, fn)
 }
 
@@ -217,7 +221,7 @@ func (s *ServerState) AsComponent() sunmao.BaseComponentBuilder {
 	return t
 }
 
-func (s *ServerState) SetState(newState any) error {
+func (s *ServerState) SetState(newState any, connId *int) error {
 	return s.r.Execute(&ExecuteTarget{
 		Id:     s.Id,
 		Method: "setValue",
@@ -225,5 +229,5 @@ func (s *ServerState) SetState(newState any) error {
 			"key":   "state",
 			"value": newState,
 		},
-	})
+	}, connId)
 }
