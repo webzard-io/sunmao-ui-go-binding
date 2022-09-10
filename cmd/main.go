@@ -89,24 +89,9 @@ func main() {
 		}
 	}()
 
-	r.HandleStore(func(s map[string]any, connId int) error {
-		fmt.Println(s, connId)
-		return nil
-	})
-
 	// add any server function as an API
 	r.Handle("debug", func(m *runtime.Message, connId int) error {
-		store := r.GetStore()
-
-		type Input struct {
-			Value string `json:"value"`
-		}
-		var input *Input
-
-		jsonData, _ := json.Marshal(store["my_input"])
-		_ = json.Unmarshal(jsonData, &input)
-
-		fmt.Println("debug >", input, "from >", connId)
+		fmt.Println("debug >", m, "from >", connId)
 		return nil
 	})
 
