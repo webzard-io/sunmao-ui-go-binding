@@ -435,6 +435,22 @@ func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableCo
 	return b
 }
 
+func (b *ArcoTableComponentBuilder) OnRowClick(serverHandler *ServerHandler) *ArcoTableComponentBuilder {
+	b._Trait(b.appBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
+		"handlers": []map[string]interface{}{
+			{
+				"type":        "onRowClick",
+				"componentId": "$utils",
+				"method": map[string]interface{}{
+					"name":       fmt.Sprintf("binding/v1/%v", serverHandler.Name),
+					"parameters": serverHandler.Parameters,
+				},
+			},
+		},
+	}))
+	return b
+}
+
 type ArcoTabsComponentBuilder struct {
 	*InnerComponentBuilder[*ArcoTabsComponentBuilder]
 }
