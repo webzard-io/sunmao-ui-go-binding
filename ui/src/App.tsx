@@ -6,6 +6,7 @@ import "@sunmao-ui/arco-lib/dist/index.css";
 
 type Props = {
   application: any;
+  modules?: any[];
   onStoreChange(store: Record<string, unknown>): void;
   handlers: string[];
   ws: WebSocket;
@@ -19,11 +20,12 @@ type ServerMessage = {
 };
 
 function App(props: Props) {
-  const { application, onStoreChange, handlers, ws } = props;
+  const { application, modules, onStoreChange, handlers, ws } = props;
   const {
     App: SunmaoApp,
     stateManager,
     apiService,
+    registry,
   } = initSunmaoUI({
     libs: [
       sunmaoChakraUILib,
@@ -55,6 +57,12 @@ function App(props: Props) {
       },
     ],
   });
+
+  if (modules) {
+    modules.forEach(moduleSchema => {
+      registry.registerModule(moduleSchema);
+    });
+  }
 
   useEffect(() => {
     return watch(stateManager.store, () => {

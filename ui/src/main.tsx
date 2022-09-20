@@ -4,13 +4,14 @@ import App from "./App";
 
 type Options = {
   application: unknown;
+  modules: any[];
   wsUrl: string;
   reloadWhenWsDisconnected: boolean;
   handlers: string[];
 };
 
 export function renderApp(options: Options) {
-  const { wsUrl, application, reloadWhenWsDisconnected, handlers } = options;
+  const { wsUrl, application, modules, reloadWhenWsDisconnected, handlers } = options;
   const ws = new WebSocket(wsUrl);
   ws.onopen = () => {
     console.log("ws connected");
@@ -27,6 +28,7 @@ export function renderApp(options: Options) {
     <React.StrictMode>
       <App
         application={application}
+        modules={modules}
         onStoreChange={(store) => {
           ws.send(
             JSON.stringify({

@@ -42,6 +42,7 @@ func main() {
 			"name":    e.Name(),
 			"size":    info.Size(),
 			"modTime": info.ModTime().Format(time.UnixDate),
+			"is_dir":  info.IsDir(),
 		})
 	}
 
@@ -61,7 +62,53 @@ func main() {
 	}).Column(&sunmao.ArcoTableColumn{
 		DataIndex: "modTime",
 		Title:     "Modify Time",
+	}).Column(&sunmao.ArcoTableColumn{
+		Title:     "Type",
+		DataIndex: "is_dir",
+		Type:      "module",
+		Module: &sunmao.ModuleContainer{
+			Type: "custom/v1/file_type",
+			Properties: map[string]any{
+				"is_dir": "{{ $listItem.is_dir }}",
+			},
+		},
 	}).Hidden("{{ tabs.activeTab != 0 }}"))
+
+	fileTypeModule := sunmao.NewModule().
+		Version("custom/v1").
+		Name("file_type").
+		Properties(map[string]any{
+			"is_dir": "{{false}}",
+		})
+
+	fileTypeB := sunmao.NewApp()
+
+	fileTypeModule.Impl(fileTypeB.Component(fileTypeB.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
+		"content": {
+			fileTypeB.NewComponent().Type("arco/v1/tag").
+				Properties(map[string]interface{}{
+					"content":        "file",
+					"closable":       false,
+					"checkable":      false,
+					"defaultChecked": false,
+					"color":          "",
+					"size":           "small",
+					"bordered":       false,
+					"defaultVisible": true,
+				}).Hidden("{{!is_dir}}"),
+			fileTypeB.NewComponent().Type("arco/v1/tag").
+				Properties(map[string]interface{}{
+					"content":        "dir",
+					"closable":       false,
+					"checkable":      false,
+					"defaultChecked": false,
+					"color":          "rgba(0,180,42, 1)",
+					"size":           "small",
+					"bordered":       false,
+					"defaultVisible": true,
+				}).Hidden("{{is_dir}}"),
+		},
+	})).ValueOf())
 
 	// use server push real-time data
 	type MyState struct {
@@ -109,6 +156,7 @@ func main() {
 			},
 		}))
 
+	r.LoadModule(fileTypeModule)
 	r.LoadApp(b.AppBuilder)
 
 	// start the runtime

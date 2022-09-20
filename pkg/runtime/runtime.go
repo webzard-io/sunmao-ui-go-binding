@@ -3,20 +3,22 @@ package runtime
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/websocket"
-	echo "github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/gorilla/websocket"
+	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
 type Runtime struct {
 	e                        *echo.Echo
 	conns                    map[int]*websocket.Conn
 	appBuilder               *sunmao.AppBuilder
+	moduleBuilders           []*sunmao.ModuleBuilder
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message, connId int) error
 	uiDir                    string
@@ -67,8 +69,14 @@ func (r *Runtime) Run() {
 			handlers = append(handlers, k)
 		}
 
+		modules := make([]any, len(r.moduleBuilders))
+		for i, b := range r.moduleBuilders {
+			modules[i] = b.ValueOf()
+		}
+
 		optionsBuf, err := json.Marshal(map[string]interface{}{
 			"application":              r.appBuilder.ValueOf(),
+			"modules":                  modules,
 			"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
 			"handlers":                 handlers,
 		})
@@ -123,6 +131,11 @@ func (r *Runtime) Run() {
 
 func (r *Runtime) LoadApp(builder *sunmao.AppBuilder) error {
 	r.appBuilder = builder
+	return nil
+}
+
+func (r *Runtime) LoadModule(builder ...*sunmao.ModuleBuilder) error {
+	r.moduleBuilders = builder
 	return nil
 }
 

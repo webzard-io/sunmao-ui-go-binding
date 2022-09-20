@@ -8,25 +8,59 @@ import (
 
 // layer 1
 
+type BaseBuilder[T any] struct {
+	inner  T
+	setter VersionMetadataSetter
+}
+
+func (b *BaseBuilder[T]) Version(version string) T {
+	b.setter.SetVersion(version)
+	return b.inner
+}
+
+func (b *BaseBuilder[T]) Name(name string) T {
+	b.setter.SetName(name)
+	return b.inner
+}
+
+func (b *BaseBuilder[T]) Description(description string) T {
+	b.setter.SetDescription(description)
+	return b.inner
+}
+
+func (b *BaseBuilder[T]) Annotation(key string, value string) T {
+	b.setter.SetAnnotations(key, value)
+	return b.inner
+}
+
 // App
 
 type AppBuilder struct {
+	*BaseBuilder[*AppBuilder]
 	application Application
 }
 
 func NewApp() *AppBuilder {
-	return &AppBuilder{application: Application{
-		Version: "example/v1",
-		Kind:    "Application",
-		Metadata: Metadata{
-			Name:        "empty",
-			Description: "",
-			Annotations: map[string]string{},
-		},
-		Spec: ApplicationSpec{
-			Components: []ComponentSchema{},
-		},
-	}}
+	b := &AppBuilder{
+		BaseBuilder: &BaseBuilder[*AppBuilder]{},
+		application: Application{
+			VersionMetadata: &VersionMetadata{
+				Version: "example/v1",
+				Metadata: Metadata{
+					Name:        "empty",
+					Description: "",
+					Annotations: map[string]string{},
+				},
+			},
+			Kind: "Application",
+			Spec: ApplicationSpec{
+				Components: []ComponentSchema{},
+			},
+		}}
+
+	b.inner = b
+	b.setter = b.application
+	return b
 }
 
 func newInnerComponent[K any](builder *AppBuilder) *InnerComponentBuilder[K] {
@@ -55,26 +89,6 @@ func (b *AppBuilder) ValueOf() Application {
 	return b.application
 }
 
-func (b *AppBuilder) Version(version string) *AppBuilder {
-	b.application.Version = version
-	return b
-}
-
-func (b *AppBuilder) Name(name string) *AppBuilder {
-	b.application.Metadata.Name = name
-	return b
-}
-
-func (b *AppBuilder) Description(description string) *AppBuilder {
-	b.application.Metadata.Description = description
-	return b
-}
-
-func (b *AppBuilder) Annotation(key string, value string) *AppBuilder {
-	b.application.Metadata.Annotations[key] = value
-	return b
-}
-
 func (b *AppBuilder) Component(builder BaseComponentBuilder) *AppBuilder {
 	b.component(builder)
 	return b
@@ -82,6 +96,62 @@ func (b *AppBuilder) Component(builder BaseComponentBuilder) *AppBuilder {
 
 func (b *AppBuilder) component(builder BaseComponentBuilder) {
 	b.application.Spec.Components = append(b.application.Spec.Components, builder.ValueOf())
+}
+
+type ModuleBuilder struct {
+	*BaseBuilder[*ModuleBuilder]
+	module Module
+}
+
+func NewModule() *ModuleBuilder {
+	b := &ModuleBuilder{
+		BaseBuilder: &BaseBuilder[*ModuleBuilder]{},
+		module: Module{
+			Kind: "Module",
+			VersionMetadata: &VersionMetadata{
+				Version: "custom/v1",
+				Metadata: Metadata{
+					Name:        "empty",
+					Description: "",
+					Annotations: map[string]string{},
+				},
+			},
+			Impl: []ComponentSchema{},
+			Spec: ModuleSpec{
+				StateMap:   map[string]interface{}{},
+				Properties: map[string]interface{}{},
+			},
+		},
+	}
+
+	b.inner = b
+	b.setter = b.module
+	return b
+}
+
+func (b *ModuleBuilder) Impl(app Application) *ModuleBuilder {
+	b.module.Impl = append(b.module.Impl, app.Spec.Components...)
+	return b
+}
+
+func (b *ModuleBuilder) StateMap(s map[string]interface{}) *ModuleBuilder {
+	for k, v := range s {
+		b.module.Spec.StateMap[k] = v
+	}
+
+	return b
+}
+
+func (b *ModuleBuilder) Properties(p map[string]interface{}) *ModuleBuilder {
+	for k, v := range p {
+		b.module.Spec.Properties[k] = v
+	}
+
+	return b
+}
+
+func (b *ModuleBuilder) ValueOf() Module {
+	return b.module
 }
 
 // Component
@@ -418,12 +488,13 @@ func (b *ArcoTableComponentBuilder) Data(data any) *ArcoTableComponentBuilder {
 }
 
 type ArcoTableColumn struct {
-	Title        string `json:"title"`
-	DataIndex    string `json:"dataIndex"`
-	Type         string `json:"type,omitempty"`
-	Sorter       bool   `json:"sorter"`
-	Filter       bool   `json:"filter"`
-	DisplayValue string `json:"displayValue,omitempty"`
+	Title        string           `json:"title"`
+	DataIndex    string           `json:"dataIndex"`
+	Type         string           `json:"type,omitempty"`
+	Sorter       bool             `json:"sorter"`
+	Filter       bool             `json:"filter"`
+	DisplayValue string           `json:"displayValue,omitempty"`
+	Module       *ModuleContainer `json:"module,omitempty"`
 }
 
 func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableComponentBuilder {
