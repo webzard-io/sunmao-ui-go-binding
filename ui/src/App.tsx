@@ -31,29 +31,26 @@ function App(props: Props) {
       sunmaoChakraUILib,
       ArcoDesignLib,
       {
-        utilMethods: [
-          () => {
-            return handlers.map((handler) =>
-              implementUtilMethod({
-                version: "binding/v1",
-                metadata: {
-                  name: handler,
-                },
-                spec: {
-                  parameters: {} as any,
-                },
-              })((params) => {
-                ws.send(
-                  JSON.stringify({
-                    type: "Action",
-                    handler,
-                    params,
-                  })
-                );
-              })
-            );
-          },
-        ],
+        utilMethods: handlers.map(
+          (handler) => () =>
+            implementUtilMethod({
+              version: "binding/v1",
+              metadata: {
+                name: handler,
+              },
+              spec: {
+                parameters: {} as any,
+              },
+            })((params) => {
+              ws.send(
+                JSON.stringify({
+                  type: "Action",
+                  handler,
+                  params,
+                })
+              );
+            })
+        ),
       },
     ],
   });
