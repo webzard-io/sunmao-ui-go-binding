@@ -1,4 +1,4 @@
-import { UtilMethodFactory } from "@sunmao-ui/runtime";
+import { implementUtilMethod } from "@sunmao-ui/runtime";
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -9,7 +9,7 @@ type Options = {
   wsUrl: string;
   reloadWhenWsDisconnected: boolean;
   handlers: string[];
-  utilMethods?: UtilMethodFactory[];
+  utilMethods?: { options: any; impl: any }[];
 };
 
 export function renderApp(options: Options) {
@@ -48,7 +48,9 @@ export function renderApp(options: Options) {
         }}
         ws={ws}
         handlers={handlers}
-        utilMethods={utilMethods}
+        utilMethods={utilMethods?.map(
+          (u) => () => implementUtilMethod(u.options)(u.impl)
+        )}
       />
     </React.StrictMode>,
     document.getElementById("root")!
