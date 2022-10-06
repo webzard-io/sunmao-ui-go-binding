@@ -107,7 +107,11 @@ func (r *Runtime) Run() {
 		for {
 			_, msgBytes, err := ws.ReadMessage()
 			if err != nil {
-				c.Logger().Error(err)
+				if strings.Contains(err.Error(), "close 1001") {
+					break
+				} else {
+					c.Logger().Error(err)
+				}
 			}
 
 			msg := &Message{}
@@ -124,6 +128,8 @@ func (r *Runtime) Run() {
 				}
 			}
 		}
+
+		return nil
 	})
 
 	r.e.Logger.Fatal(r.e.Start(":8999"))
@@ -155,6 +161,7 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 		if connId != nil && id != *connId {
 			continue
 		}
+
 		msg, err := json.Marshal(map[string]interface{}{
 			"type":        "UiMethod",
 			"componentId": target.Id,
@@ -164,7 +171,11 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 		if err != nil {
 			return err
 		}
-		ws.WriteMessage(websocket.TextMessage, msg)
+
+		err = ws.WriteMessage(websocket.TextMessage, msg)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
