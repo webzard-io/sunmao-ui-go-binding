@@ -33,6 +33,7 @@ func New(uiDir string) *Runtime {
 		conns:                    map[int]*websocket.Conn{},
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message, connId int) error{},
+		hooks:                    map[string]func(connId int) error{},
 		uiDir:                    uiDir,
 	}
 
