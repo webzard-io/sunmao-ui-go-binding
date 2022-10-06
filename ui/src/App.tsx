@@ -1,5 +1,10 @@
 import { useEffect } from "react";
-import { implementUtilMethod, initSunmaoUI, watch } from "@sunmao-ui/runtime";
+import {
+  implementUtilMethod,
+  initSunmaoUI,
+  UtilMethodFactory,
+  watch,
+} from "@sunmao-ui/runtime";
 import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
 import { ArcoDesignLib } from "@sunmao-ui/arco-lib";
 import "@sunmao-ui/arco-lib/dist/index.css";
@@ -10,6 +15,7 @@ type Props = {
   onStoreChange(store: Record<string, unknown>): void;
   handlers: string[];
   ws: WebSocket;
+  utilMethods?: UtilMethodFactory[];
 };
 
 type ServerMessage = {
@@ -20,7 +26,8 @@ type ServerMessage = {
 };
 
 function App(props: Props) {
-  const { application, modules, onStoreChange, handlers, ws } = props;
+  const { application, modules, onStoreChange, handlers, ws, utilMethods } =
+    props;
   const {
     App: SunmaoApp,
     stateManager,
@@ -31,32 +38,34 @@ function App(props: Props) {
       sunmaoChakraUILib,
       ArcoDesignLib,
       {
-        utilMethods: handlers.map(
-          (handler) => () =>
-            implementUtilMethod({
-              version: "binding/v1",
-              metadata: {
-                name: handler,
-              },
-              spec: {
-                parameters: {} as any,
-              },
-            })((params) => {
-              ws.send(
-                JSON.stringify({
-                  type: "Action",
-                  handler,
-                  params,
-                })
-              );
-            })
+        utilMethods: (utilMethods || []).concat(
+          handlers.map(
+            (handler) => () =>
+              implementUtilMethod({
+                version: "binding/v1",
+                metadata: {
+                  name: handler,
+                },
+                spec: {
+                  parameters: {} as any,
+                },
+              })((params) => {
+                ws.send(
+                  JSON.stringify({
+                    type: "Action",
+                    handler,
+                    params,
+                  })
+                );
+              })
+          )
         ),
       },
     ],
   });
 
   if (modules) {
-    modules.forEach(moduleSchema => {
+    modules.forEach((moduleSchema) => {
       registry.registerModule(moduleSchema);
     });
   }

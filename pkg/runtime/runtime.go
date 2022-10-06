@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/websocket"
-	echo "github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
@@ -21,6 +21,7 @@ type Runtime struct {
 	moduleBuilders           []*sunmao.ModuleBuilder
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message, connId int) error
+	hooks                    map[string]func(connId int) error
 	uiDir                    string
 }
 
@@ -104,10 +105,20 @@ func (r *Runtime) Run() {
 			ws.Close()
 		}()
 
+		connectedHook, ok := r.hooks["connected"]
+		if ok {
+			connectedHook(connId)
+		}
+
 		for {
 			_, msgBytes, err := ws.ReadMessage()
 			if err != nil {
 				if strings.Contains(err.Error(), "close 1001") {
+					disconnectedHook, ok := r.hooks["disconnected"]
+					if ok {
+						disconnectedHook(connId)
+					}
+
 					break
 				} else {
 					c.Logger().Error(err)
@@ -147,6 +158,10 @@ func (r *Runtime) LoadModule(builder ...*sunmao.ModuleBuilder) error {
 
 func (r *Runtime) Handle(handler string, fn func(m *Message, connId int) error) {
 	r.handlers[handler] = fn
+}
+
+func (r *Runtime) On(hook string, fn func(connId int) error) {
+	r.hooks[hook] = fn
 }
 
 type ExecuteTarget struct {
