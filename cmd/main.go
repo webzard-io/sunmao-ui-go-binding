@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 
@@ -123,16 +124,7 @@ func main() {
 		for {
 			time.Sleep(1 * time.Second)
 			// update state
-			//myState.SetState(&MyState{Random: rand.Int()})
-
-			// call any UI's method like an API
-			//r.Execute(&runtime.ExecuteTarget{
-			//	Id:     "my_input",
-			//	Method: "setInputValue",
-			//	Parameters: map[string]interface{}{
-			//		"value": time.Now().Format(time.UnixDate),
-			//	},
-			//})
+			myState.SetState(&MyState{Random: rand.Int()}, nil)
 		}
 	}()
 
@@ -144,7 +136,21 @@ func main() {
 
 	r.Handle("writeFile", func(m *runtime.Message, connId int) error {
 		content, _ := json.Marshal(m.Params)
-		return os.WriteFile("test", content, 777)
+		err := os.WriteFile("test", content, 777)
+		if err != nil {
+			return err
+		}
+
+		// call any UI's method like an API
+		r.Execute(&runtime.ExecuteTarget{
+			Id:     "my_input",
+			Method: "setInputValue",
+			Parameters: map[string]interface{}{
+				"value": time.Now().Format(time.UnixDate),
+			},
+		}, &connId)
+
+		return nil
 	})
 
 	b.Component(b.NewButton().Content("click to debug").
