@@ -38,14 +38,6 @@ export function renderApp(options: Options) {
       <App
         application={application}
         modules={modules}
-        onStoreChange={(store) => {
-          ws.send(
-            JSON.stringify({
-              type: "StoreChange",
-              store,
-            })
-          );
-        }}
         ws={ws}
         handlers={handlers}
         utilMethods={utilMethods?.map(

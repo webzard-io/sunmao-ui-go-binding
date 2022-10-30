@@ -3,7 +3,6 @@ import {
   implementUtilMethod,
   initSunmaoUI,
   UtilMethodFactory,
-  watch,
 } from "@sunmao-ui/runtime";
 import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
 import { ArcoDesignLib } from "@sunmao-ui/arco-lib";
@@ -12,7 +11,6 @@ import "@sunmao-ui/arco-lib/dist/index.css";
 type Props = {
   application: any;
   modules?: any[];
-  onStoreChange(store: Record<string, unknown>): void;
   handlers: string[];
   ws: WebSocket;
   utilMethods?: UtilMethodFactory[];
@@ -26,8 +24,7 @@ type ServerMessage = {
 };
 
 function App(props: Props) {
-  const { application, modules, onStoreChange, handlers, ws, utilMethods } =
-    props;
+  const { application, modules, handlers, ws, utilMethods } = props;
   const {
     App: SunmaoApp,
     stateManager,
@@ -69,12 +66,6 @@ function App(props: Props) {
       registry.registerModule(moduleSchema);
     });
   }
-
-  useEffect(() => {
-    return watch(stateManager.store, () => {
-      onStoreChange(stateManager.store);
-    });
-  }, [stateManager]);
 
   useEffect(() => {
     const messageHandler = (evt: MessageEvent) => {
