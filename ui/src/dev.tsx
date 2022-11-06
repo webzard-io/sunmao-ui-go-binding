@@ -1,7 +1,7 @@
 import { implementUtilMethod } from "@sunmao-ui/runtime";
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import Editor from "./Editor";
 import { MainOptions } from "./shared";
 
 export function renderApp(options: MainOptions) {
@@ -29,7 +29,7 @@ export function renderApp(options: MainOptions) {
 
   ReactDOM.render(
     <React.StrictMode>
-      <App
+      <Editor
         application={application}
         modules={modules}
         ws={ws}

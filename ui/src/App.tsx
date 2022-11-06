@@ -1,93 +1,41 @@
-import { useEffect } from "react";
-import {
-  implementUtilMethod,
-  initSunmaoUI,
-  UtilMethodFactory,
-} from "@sunmao-ui/runtime";
-import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
-import { ArcoDesignLib } from "@sunmao-ui/arco-lib";
+import { initSunmaoUI } from "@sunmao-ui/runtime";
 import "@sunmao-ui/arco-lib/dist/index.css";
+import {
+  getLibs,
+  useApiService,
+  BaseProps,
+  patchApp,
+  patchModules,
+} from "./shared";
+import { RuntimeModule } from "@sunmao-ui/core";
 
-type Props = {
-  application: any;
-  modules?: any[];
-  handlers: string[];
-  ws: WebSocket;
-  utilMethods?: UtilMethodFactory[];
-};
-
-type ServerMessage = {
-  type: string;
-  componentId: string;
-  name: string;
-  parameters?: any;
-};
-
-function App(props: Props) {
-  const { application, modules, handlers, ws, utilMethods } = props;
+function App(props: BaseProps) {
+  const {
+    application,
+    modules,
+    handlers,
+    ws,
+    utilMethods,
+    applicationPatch,
+    modulesPatch,
+  } = props;
   const {
     App: SunmaoApp,
-    stateManager,
     apiService,
     registry,
   } = initSunmaoUI({
-    libs: [
-      sunmaoChakraUILib,
-      ArcoDesignLib,
-      {
-        utilMethods: (utilMethods || []).concat(
-          handlers.map(
-            (handler) => () =>
-              implementUtilMethod({
-                version: "binding/v1",
-                metadata: {
-                  name: handler,
-                },
-                spec: {
-                  parameters: {} as any,
-                },
-              })((params) => {
-                ws.send(
-                  JSON.stringify({
-                    type: "Action",
-                    handler,
-                    params,
-                  })
-                );
-              })
-          )
-        ),
-      },
-    ],
+    libs: getLibs({ ws, handlers, utilMethods }),
   });
 
   if (modules) {
-    modules.forEach((moduleSchema) => {
-      registry.registerModule(moduleSchema);
+    patchModules(modules, modulesPatch).forEach((moduleSchema) => {
+      registry.registerModule(moduleSchema as RuntimeModule);
     });
   }
 
-  useEffect(() => {
-    const messageHandler = (evt: MessageEvent) => {
-      try {
-        const message: ServerMessage = JSON.parse(evt.data);
-        if (message.type !== "UiMethod") {
-          return;
-        }
-        apiService.send("uiMethod", {
-          componentId: message.componentId,
-          name: message.name,
-          parameters: message.parameters,
-        });
-      } catch (error) {
-        console.log("message handler", error);
-      }
-    };
-    ws.addEventListener("message", messageHandler);
-    return () => ws.removeEventListener("message", messageHandler);
-  }, [apiService]);
+  useApiService({ ws, apiService });
 
-  return <SunmaoApp options={application} />;
+  return <SunmaoApp options={patchApp(application, applicationPatch)} />;
 }
 
 export default App;
