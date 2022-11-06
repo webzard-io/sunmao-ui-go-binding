@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"os"
 	"time"
 
@@ -13,13 +12,13 @@ import (
 
 func main() {
 	// init the runtime
-	r := runtime.New("ui")
+	r := runtime.New("ui", "patch")
 	// init an App builder, use a lib
 	b := sunmao.NewChakraUIApp()
 
 	arcoB := sunmao.NewArcoApp()
 
-	// build some UI, some CSS is good
+	// build some UI in code, perfect it in the browser!
 	// more UI
 	b.Component(b.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
 		"content": {
@@ -28,11 +27,7 @@ func main() {
 		},
 	}).Properties(map[string]interface{}{
 		"direction": "vertical",
-	}).Style("content", `
-		width: 100%;
-		padding: 1em;
-		background: #f1f3f5;
-	`))
+	}))
 
 	// use server dynamic data
 	entries, _ := os.ReadDir(".")
@@ -124,7 +119,7 @@ func main() {
 		for {
 			time.Sleep(1 * time.Second)
 			// update state
-			myState.SetState(&MyState{Random: rand.Int()}, nil)
+			//myState.SetState(&MyState{Random: rand.Int()}, nil)
 		}
 	}()
 

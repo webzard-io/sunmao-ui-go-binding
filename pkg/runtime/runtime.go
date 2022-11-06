@@ -23,9 +23,10 @@ type Runtime struct {
 	handlers                 map[string]func(m *Message, connId int) error
 	hooks                    map[string]func(connId int) error
 	uiDir                    string
+	patchDir                 string
 }
 
-func New(uiDir string) *Runtime {
+func New(uiDir string, patchDir string) *Runtime {
 	e := echo.New()
 
 	r := &Runtime{
@@ -35,6 +36,7 @@ func New(uiDir string) *Runtime {
 		handlers:                 map[string]func(m *Message, connId int) error{},
 		hooks:                    map[string]func(connId int) error{},
 		uiDir:                    uiDir,
+		patchDir:                 patchDir,
 	}
 
 	return r
@@ -51,10 +53,61 @@ type Message struct {
 	Store   map[string]any `json:"store"`
 }
 
+type DeltaBody struct {
+	Delta map[string]interface{} `json:"delta"`
+}
+
+func (r *Runtime) formatUiOptions() (*string, error) {
+	handlers := []string{}
+	for k := range r.handlers {
+		handlers = append(handlers, k)
+	}
+
+	modules := make([]any, len(r.moduleBuilders))
+	for i, b := range r.moduleBuilders {
+		modules[i] = b.ValueOf()
+	}
+
+	appPatch := map[string]interface{}{}
+	appPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
+	if err == nil {
+		err = json.Unmarshal(appPatchBuf, &appPatch)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	modulesPatch := map[string]interface{}{}
+	modulesPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/modules.patch.json", r.patchDir))
+	if err == nil {
+		err = json.Unmarshal(modulesPatchBuf, &modulesPatch)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	optionsBuf, err := json.Marshal(map[string]interface{}{
+		"application":              r.appBuilder.ValueOf(),
+		"modules":                  modules,
+		"applicationPatch":         appPatch,
+		"modulesPatch":             modulesPatch,
+		"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
+		"handlers":                 handlers,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	s := string(optionsBuf)
+	return &s, nil
+}
+
 func (r *Runtime) Run() {
 	if r.appBuilder == nil {
 		log.Fatalln("please load app before run")
 	}
+
+	os.MkdirAll(r.patchDir, os.ModePerm)
 
 	r.e.Use(middleware.Gzip())
 
@@ -66,29 +119,103 @@ func (r *Runtime) Run() {
 			return err
 		}
 
-		handlers := []string{}
-		for k := range r.handlers {
-			handlers = append(handlers, k)
-		}
-
-		modules := make([]any, len(r.moduleBuilders))
-		for i, b := range r.moduleBuilders {
-			modules[i] = b.ValueOf()
-		}
-
-		optionsBuf, err := json.Marshal(map[string]interface{}{
-			"application":              r.appBuilder.ValueOf(),
-			"modules":                  modules,
-			"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
-			"handlers":                 handlers,
-		})
+		options, err := r.formatUiOptions()
 		if err != nil {
 			return err
 		}
 
 		html := strings.Replace(string(buf),
 			"/* APPLICATION */",
-			fmt.Sprintf("options = Object.assign(options, %v)", string(optionsBuf)), 1)
+			fmt.Sprintf("options = Object.assign(options, %v)", *options), 1)
+		return c.HTML(http.StatusOK, html)
+	})
+
+	r.e.GET("/editor", func(c echo.Context) error {
+		buf, err := os.ReadFile(fmt.Sprintf("%v/dist/editor.html", r.uiDir))
+		if err != nil {
+			return err
+		}
+
+		options, err := r.formatUiOptions()
+		if err != nil {
+			return err
+		}
+
+		html := strings.Replace(string(buf),
+			"/* APPLICATION */",
+			fmt.Sprintf("options = Object.assign(options, %v)", *options), 1)
+		return c.HTML(http.StatusOK, html)
+	})
+
+	r.e.PUT("/sunmao-binding-patch/app", func(c echo.Context) error {
+		b := &DeltaBody{}
+		if err := c.Bind(b); err != nil {
+			return err
+		}
+
+		delta, err := json.MarshalIndent(b.Delta, "", "\t")
+		if err != nil {
+			return err
+		}
+
+		err = os.WriteFile(fmt.Sprintf("%v/app.patch.json", r.patchDir), delta, os.ModePerm)
+		if err != nil {
+			return err
+		}
+
+		return c.String(http.StatusOK, "ok")
+	})
+
+	r.e.PUT("/sunmao-binding-patch/modules", func(c echo.Context) error {
+		b := &DeltaBody{}
+		if err := c.Bind(b); err != nil {
+			return err
+		}
+
+		delta, err := json.MarshalIndent(b.Delta, "", "\t")
+		if err != nil {
+			return err
+		}
+
+		err = os.WriteFile(fmt.Sprintf("%v/modules.patch.json", r.patchDir), delta, os.ModePerm)
+		if err != nil {
+			return err
+		}
+
+		return c.String(http.StatusOK, "ok")
+	})
+
+	r.e.GET("/sunmao-binding-patch/app/visualize", func(c echo.Context) error {
+		appBuf, err := json.Marshal(r.appBuilder.ValueOf())
+		if err != nil {
+			return err
+		}
+
+		appPatchStr := "{}"
+		appPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
+		if err == nil {
+			appPatchStr = string(appPatchBuf)
+		}
+
+		html := fmt.Sprintf(`
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type='text/javascript' src="https://cdn.jsdelivr.net/npm/jsondiffpatch/dist/jsondiffpatch.umd.min.js"></script>
+        <link rel="stylesheet" href="https://benjamine.github.io/jsondiffpatch/demo/style.css" type="text/css" />
+        <link rel="stylesheet" href="https://benjamine.github.io/jsondiffpatch/formatters-styles/html.css" type="text/css" />
+    </head>
+    <body>
+        <div id="visual"></div>
+        <script>
+            var left = %v;
+            var delta = %v;
+            document.getElementById('visual').innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+        </script>
+    </body>
+</html>
+`, string(appBuf), appPatchStr)
+
 		return c.HTML(http.StatusOK, html)
 	})
 

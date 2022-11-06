@@ -1,0 +1,55 @@
+{
+	"spec": {
+		"components": {
+			"1": {
+				"traits": {
+					"1": [
+						{
+							"properties": {
+								"styles": [
+									{
+										"cssProperties": {
+											"backgroundColor": "#f1f3f5",
+											"paddingBottom": "1em",
+											"paddingLeft": "1em",
+											"paddingRight": "1em",
+											"paddingTop": "1em",
+											"width": "100%"
+										},
+										"style": "",
+										"styleSlot": "content"
+									}
+								]
+							},
+							"type": "core/v1/style"
+						}
+					],
+					"_t": "a"
+				}
+			},
+			"4": {
+				"properties": {
+					"defaultActiveTab": [
+						0,
+						1
+					],
+					"tabs": {
+						"0": {
+							"title": [
+								"Tab 1",
+								"Tab 1~~~"
+							]
+						},
+						"_t": "a"
+					}
+				}
+			},
+			"_3": [
+				"",
+				1,
+				3
+			],
+			"_t": "a"
+		}
+	}
+}
