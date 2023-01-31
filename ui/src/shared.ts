@@ -15,6 +15,7 @@ import {
   resolveJson,
   PropsDiffBlock,
 } from "@sunmao-ui/resolver";
+import { K8sLib } from "kui-shadow";
 
 export function getLibs({
   ws,
@@ -28,6 +29,7 @@ export function getLibs({
   return [
     sunmaoChakraUILib,
     ArcoDesignLib,
+    ...K8sLib,
     {
       utilMethods: (utilMethods || []).concat(
         handlers.map(

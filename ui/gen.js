@@ -1,4 +1,5 @@
 const { ArcoDesignLib } = require("@sunmao-ui/arco-lib");
+const { K8sLib } = require("kui-shadow");
 const fs = require("fs");
 
 const libName = "Arco";

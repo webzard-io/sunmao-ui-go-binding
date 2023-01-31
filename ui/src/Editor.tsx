@@ -10,6 +10,7 @@ import {
 } from "./shared";
 import "@sunmao-ui/arco-lib/dist/index.css";
 import "@sunmao-ui/editor/dist/index.css";
+import 'kui-shadow/dist/style.css';
 
 function Editor(props: BaseProps) {
   const {
