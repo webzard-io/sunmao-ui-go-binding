@@ -225,11 +225,12 @@ func (b *InnerComponentBuilder[K]) Children(slots map[string][]BaseComponentBuil
 	for slot := range slots {
 		for _, builder := range slots[slot] {
 			builder._Trait(b.appBuilder.NewTrait().
-				Type("core/v1/slot").Properties(map[string]interface{}{
+				Type("core/v2/slot").Properties(map[string]interface{}{
 				"container": map[string]interface{}{
 					"id":   b.component.Id,
 					"slot": slot,
 				},
+				"ifCondition": true,
 			}))
 			parentId := b.component.Id
 			b.appBuilder.childrenQueue[parentId] = append(b.appBuilder.childrenQueue[parentId], builder)
@@ -345,11 +346,12 @@ func NewChakraUIApp() *ChakraUIAppBuilder {
 func (b *ChakraUIAppBuilder) Component(builder BaseComponentBuilder) *ChakraUIAppBuilder {
 	if !componentAttachedToSlot(builder) {
 		builder._Trait(b.NewTrait().
-			Type("core/v1/slot").Properties(map[string]interface{}{
+			Type("core/v2/slot").Properties(map[string]interface{}{
 			"container": map[string]interface{}{
 				"id":   "root",
 				"slot": "root",
 			},
+			"ifCondition": true,
 		}))
 	}
 
