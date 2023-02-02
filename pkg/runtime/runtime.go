@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/mitchellh/hashstructure"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
@@ -68,6 +69,38 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 		modules[i] = b.ValueOf()
 	}
 
+	appBase := map[string]interface{}{}
+	appBaseBuf, err := os.ReadFile(fmt.Sprintf("%v/app.base.json", r.patchDir))
+	if err == nil {
+		err = json.Unmarshal(appBaseBuf, &appBase)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	appBaseHash, err := hashstructure.Hash(appBase, nil)
+	currentAppJson, _ := json.Marshal(r.appBuilder.ValueOf())
+	currentApp := map[string]interface{}{}
+
+	json.Unmarshal(currentAppJson, &currentApp)
+	currentAppHash, err := hashstructure.Hash(currentApp, nil)
+
+	isOldBase := appBaseHash == currentAppHash
+
+	// keys := make([]string, 0, len(appBase))
+	// for key := range appBase {
+	// 	keys = append(keys, key)
+	// }
+	// fmt.Println("currentApp", currentApp)
+	fmt.Println("appBase", appBase)
+	fmt.Println("currentApp", currentApp)
+	fmt.Println("isOldBase", isOldBase)
+
+	// appBaseOption := map[string]interface{}{}
+	// if !isOldBase {
+	// 	appBaseOption = appBase
+	// }
+
 	appPatch := map[string]interface{}{}
 	appPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
 	if err == nil {
@@ -87,9 +120,10 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 	}
 
 	optionsBuf, err := json.Marshal(map[string]interface{}{
-		"application":              r.appBuilder.ValueOf(),
+		"application":              currentApp,
 		"modules":                  modules,
 		"applicationPatch":         appPatch,
+		"applicationBase":          appBase,
 		"modulesPatch":             modulesPatch,
 		"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
 		"handlers":                 handlers,
@@ -158,9 +192,18 @@ func (r *Runtime) Run() {
 			return err
 		}
 
-		err = os.WriteFile(fmt.Sprintf("%v/app.patch.json", r.patchDir), delta, os.ModePerm)
-		if err != nil {
-			return err
+		// save app.patch.json
+		writePatchErr := os.WriteFile(fmt.Sprintf("%v/app.patch.json", r.patchDir), delta, os.ModePerm)
+		if writePatchErr != nil {
+			return writePatchErr
+		}
+
+		// save app.base.json
+		baseApp, _ := json.Marshal(r.appBuilder.ValueOf())
+		fmt.Println(string(baseApp))
+		writeBaseErr := os.WriteFile(fmt.Sprintf("%v/app.base.json", r.patchDir), baseApp, os.ModePerm)
+		if writeBaseErr != nil {
+			return writeBaseErr
 		}
 
 		return c.String(http.StatusOK, "ok")

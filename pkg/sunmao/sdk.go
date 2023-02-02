@@ -2,8 +2,6 @@ package sunmao
 
 import (
 	"fmt"
-
-	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 // layer 1
@@ -63,11 +61,13 @@ func NewApp() *AppBuilder {
 	return b
 }
 
+var componentCount = 0
+
 func newInnerComponent[K any](builder *AppBuilder) *InnerComponentBuilder[K] {
-	id, _ := gonanoid.Generate("abcdefghijklmn_", 6)
+	componentCount = componentCount + 1
 	return &InnerComponentBuilder[K]{
 		component: ComponentSchema{
-			Id:         id,
+			Id:         "component" + fmt.Sprint(componentCount),
 			Type:       "",
 			Properties: map[string]interface{}{},
 			Traits:     []TraitSchema{},
