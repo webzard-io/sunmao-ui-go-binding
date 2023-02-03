@@ -14,6 +14,7 @@ export function renderApp(options: MainOptions) {
     utilMethods,
     applicationPatch,
     modulesPatch,
+    applicationBase
   } = options;
   const ws = new WebSocket(wsUrl);
   ws.onopen = () => {

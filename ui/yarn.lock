@@ -246,6 +246,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.5.4":
+  version "7.20.13"
+  resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.20.13.tgz#7055ab8a7cff2b8f6058bf6ae45ff84ad2aded4b"
+  integrity sha512-gt3PKXs0DBoL9xCvOIIZ2NEqAGZqHjAnmVbfQtB620V0uReIQutpel14KcneZuer7UioY8ALKZ7iocavvzTNFA==
+  dependencies:
+    regenerator-runtime "^0.13.11"
+
 "@babel/template@^7.18.10", "@babel/template@^7.18.6":
   version "7.18.10"
   resolved "http://192.168.26.29:7001/@babel/template/download/@babel/template-7.18.10.tgz#6f9134835970d1dbf0835c0d100c9f38de0c5e71"
@@ -1501,17 +1508,6 @@
     "@emotion/use-insertion-effect-with-fallbacks" "^1.0.0"
     "@emotion/utils" "^1.2.0"
 
-"@emotion/styled@^11.6.0":
-  version "11.10.0"
-  resolved "http://192.168.26.29:7001/@emotion/styled/download/@emotion/styled-11.10.0.tgz#c19484dab4206ae46727c07efb4316423dd21312"
-  integrity sha1-wZSE2rQgauRnJ8B++0MWQj3SExI=
-  dependencies:
-    "@babel/runtime" "^7.18.3"
-    "@emotion/babel-plugin" "^11.10.0"
-    "@emotion/is-prop-valid" "^1.2.0"
-    "@emotion/serialize" "^1.1.0"
-    "@emotion/utils" "^1.2.0"
-
 "@emotion/unitless@^0.8.0":
   version "0.8.0"
   resolved "http://192.168.26.29:7001/@emotion/unitless/download/@emotion/unitless-0.8.0.tgz#a4a36e9cbdc6903737cd20d38033241e1b8833db"
@@ -1648,47 +1644,51 @@
   resolved "http://192.168.26.29:7001/@sinclair/typebox/download/@sinclair/typebox-0.21.2.tgz#d23a42adafc482f4893994e22916b0b54e18c23d"
   integrity sha1-0jpCra/EgvSJOZTiKRawtU4Ywj0=
 
-"@sunmao-ui/arco-lib@^0.3.5-alpha.9":
-  version "0.3.5-alpha.9"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/arco-lib/download/@sunmao-ui/arco-lib-0.3.5-alpha.9.tgz#c190977e7918d94583a84bdb0bf667ed2538523c"
-  integrity sha1-wZCXfnkY2UWDqEvbC/Zn7SU4Ujw=
+"@sunmao-ui/arco-lib@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/arco-lib/-/arco-lib-0.10.0.tgz#4f48b30dc03ee8b40ac28e245d379123ed721bbc"
+  integrity sha512-ABbwJ/5OznX7Maszq7E9OKzkyQOsyJMl/fOY0M5Vk3nnxRiAImczzBGEx5K/1wY8bwu6i8MrrDxmgYAQylZFTg==
   dependencies:
     "@arco-design/web-react" "^2.34.0"
-    "@sunmao-ui/editor-sdk" "^0.3.5-alpha.9"
-    "@sunmao-ui/shared" "^0.2.4-alpha.6"
+    "@sunmao-ui/editor-sdk" "^0.10.0"
+    "@sunmao-ui/shared" "^0.5.0-alpha.0"
     react-resizable "^3.0.4"
 
-"@sunmao-ui/chakra-ui-lib@^0.5.5-alpha.9":
-  version "0.5.5-alpha.9"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/chakra-ui-lib/download/@sunmao-ui/chakra-ui-lib-0.5.5-alpha.9.tgz#5c25f5994f5d595fac6491c9bca5589392c6cf51"
-  integrity sha1-XCX1mU9dWV+sZJHJvKVYk5LGz1E=
+"@sunmao-ui/chakra-ui-lib@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/chakra-ui-lib/-/chakra-ui-lib-0.10.0.tgz#769693df560d64dd63b9032fda51619491e0f2bf"
+  integrity sha512-OhWJN9xKfnbAUw13OLXeFaQadic1c5BAmXP0ya9PahcmT16ErKvFrhhvrzRDCzSn6PP6JjOF10DDebsLOeTx9Q==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
-    "@emotion/styled" "^11.6.0"
-    "@sunmao-ui/editor-sdk" "^0.3.5-alpha.9"
+    "@sunmao-ui/editor-sdk" "^0.10.0"
     chakra-react-select "^1.3.2"
     framer-motion "^3.10.6"
 
-"@sunmao-ui/core@^0.7.4-alpha.2":
-  version "0.7.4-alpha.2"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/core/download/@sunmao-ui/core-0.7.4-alpha.2.tgz#07ff84ce8ca55b60a6f7c307ffafe1b1ea95c281"
-  integrity sha1-B/+EzoylW2Cm98MH/6/hseqVwoE=
+"@sunmao-ui/core@^0.10.0-alpha.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/core/-/core-0.10.0.tgz#82a81390fac7dd1a10c7259cb817934abb5a50de"
+  integrity sha512-lJYbzjQnTvNIhFEPazt7nRQy3V93YPhHIq2p/8MiiIuoED6/2VO5UVysIQgRbuoW9hUP43FztyHdnEXlZ4R5/A==
 
-"@sunmao-ui/editor-sdk@^0.3.5-alpha.9":
-  version "0.3.5-alpha.9"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/editor-sdk/download/@sunmao-ui/editor-sdk-0.3.5-alpha.9.tgz#a3bea2820371fad0b2ce21d5b54de38cf2934cbb"
-  integrity sha1-o76iggNx+tCyziHVtU3jjPKTTLs=
+"@sunmao-ui/core@^0.8.0":
+  version "0.8.1"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/core/-/core-0.8.1.tgz#8261b00407c0aa44535c00505b579c0a8a9355d6"
+  integrity sha512-sWWcKYwnZYgD+PBYTvJZfOfqi9YAiMASHQVX/uEJWqzF8IildhWTR4NH7xLNTRO8vgrl0Q1e49DFqKo/P1qvwQ==
+
+"@sunmao-ui/editor-sdk@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/editor-sdk/-/editor-sdk-0.10.0.tgz#2fd388c6f5df0b91dacb2319dfe546c44c493e3a"
+  integrity sha512-csI9GeCj0LHwXTlY7mQbGAKiUBbsb0/fwo4cVM8I5j8Gx8IaZNfz4W7mDEaDR7EF3bWNDhEEBPIRiSXtKRC4aA==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
     "@emotion/css" "^11.7.1"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.7.4-alpha.2"
-    "@sunmao-ui/runtime" "^0.7.4-alpha.7"
-    "@sunmao-ui/shared" "^0.2.4-alpha.6"
+    "@sunmao-ui/core" "^0.10.0-alpha.0"
+    "@sunmao-ui/runtime" "^0.10.0"
+    "@sunmao-ui/shared" "^0.5.0-alpha.0"
     ajv "^8.8.2"
-    codemirror "^5.63.3"
+    codemirror "^5.65.9"
     formik "^2.2.9"
     framer-motion "^3.10.6"
     immer "^9.0.6"
@@ -1698,11 +1698,12 @@
     mobx-react-lite "^3.2.2"
     rc-select "^14.1.5"
     react-color "^2.19.3"
+    tern "^0.24.3"
 
-"@sunmao-ui/editor@^0.7.5-alpha.9":
-  version "0.7.5-alpha.9"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/editor/download/@sunmao-ui/editor-0.7.5-alpha.9.tgz#4a008a3777deef10a68605386e2a0d21eaa43a12"
-  integrity sha1-SgCKN3fe7xCmhgU4bioNIeqkOhI=
+"@sunmao-ui/editor@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/editor/-/editor-0.10.0.tgz#d5b7aaa7c8ab27414a3120c22463a9783929190b"
+  integrity sha512-i0EtW3WrVaA2pcSZBS2Kdpc2UXbhcIMLZVvwn71UaR59OdIrHC3ZnzzTuh76x+L4cVtTx5S1O8D9Bhvfza+UjA==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
@@ -1710,17 +1711,17 @@
     "@emotion/css" "^11.7.1"
     "@optum/json-schema-editor" "^2.1.0"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/arco-lib" "^0.3.5-alpha.9"
-    "@sunmao-ui/chakra-ui-lib" "^0.5.5-alpha.9"
-    "@sunmao-ui/core" "^0.7.4-alpha.2"
-    "@sunmao-ui/editor-sdk" "^0.3.5-alpha.9"
-    "@sunmao-ui/runtime" "^0.7.4-alpha.7"
-    "@sunmao-ui/shared" "^0.2.4-alpha.6"
+    "@sunmao-ui/arco-lib" "^0.10.0"
+    "@sunmao-ui/chakra-ui-lib" "^0.10.0"
+    "@sunmao-ui/core" "^0.10.0-alpha.0"
+    "@sunmao-ui/editor-sdk" "^0.10.0"
+    "@sunmao-ui/runtime" "^0.10.0"
+    "@sunmao-ui/shared" "^0.5.0-alpha.0"
     acorn "^8.7.0"
     acorn-loose "^8.3.0"
     acorn-walk "^8.2.0"
     ajv "^8.8.2"
-    codemirror "^5.63.3"
+    codemirror "^5.65.9"
     escodegen "^2.0.0"
     formik "^2.2.9"
     immer "^9.0.6"
@@ -1731,19 +1732,34 @@
     react "^17.0.2"
     react-codemirror2 "^7.2.1"
     react-dom "^17.0.2"
+    react-fiber-traverse "^0.0.8"
     react-json-tree "^0.16.1"
     scroll-into-view "^1.16.2"
-    tern "^0.24.3"
 
-"@sunmao-ui/runtime@^0.7.4-alpha.7":
-  version "0.7.4-alpha.7"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/runtime/download/@sunmao-ui/runtime-0.7.4-alpha.7.tgz#4b86884e28651c4d22e50705e5b8d73cc99caa55"
-  integrity sha1-S4aITihlHE0i5QcF5bjXPMmcqlU=
+"@sunmao-ui/resolver@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/resolver/-/resolver-0.0.2.tgz#8136733f7696e4c99ca6a7075fc8d428defb970e"
+  integrity sha512-QlxGF0kGYGXyNUtMbRFXysiJGpWfiB/38Z/FZIwYpqLAfzO+EyvBcdSSILF+wcIMYT9TDD7kfj/ag2D3/YgllA==
+  dependencies:
+    "@arco-design/web-react" "^2.34.0"
+    "@emotion/css" "^11.7.1"
+    "@sunmao-ui/core" "^0.8.0"
+    diff "^5.1.0"
+    js-yaml "^4.1.0"
+    lodash "^4.17.21"
+    node-diff3 "^3.1.2"
+    react "16.x || 17.x"
+    react-dom "16.x || 17.x"
+
+"@sunmao-ui/runtime@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/runtime/-/runtime-0.10.0.tgz#75d5224ec8c1054704ff5214fe35dc88bce744c7"
+  integrity sha512-I30WhJIi0AGYADdyLd7+xdOqbt6X9TTPl6omwYxneSzE7jxCGVYAqygCksgokJtHrV2P7GM5cNqV8iuyG+ELLA==
   dependencies:
     "@emotion/css" "^11.7.1"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.7.4-alpha.2"
-    "@sunmao-ui/shared" "^0.2.4-alpha.6"
+    "@sunmao-ui/core" "^0.10.0-alpha.0"
+    "@sunmao-ui/shared" "^0.5.0-alpha.0"
     "@vue/reactivity" "^3.1.5"
     "@vue/shared" "^3.2.20"
     copy-to-clipboard "^3.3.1"
@@ -1757,10 +1773,10 @@
     use-deep-compare "^1.1.0"
     wouter "^2.7.4"
 
-"@sunmao-ui/shared@^0.2.4-alpha.6":
-  version "0.2.4-alpha.6"
-  resolved "http://192.168.26.29:7001/@sunmao-ui/shared/download/@sunmao-ui/shared-0.2.4-alpha.6.tgz#8b683748dd28b57f889f66ededf239469a0a7c80"
-  integrity sha1-i2g3SN0otX+In2bt7fI5RpoKfIA=
+"@sunmao-ui/shared@^0.5.0-alpha.0":
+  version "0.5.0-alpha.0"
+  resolved "https://registry.npmmirror.com/@sunmao-ui/shared/-/shared-0.5.0-alpha.0.tgz#4d0ae85e1059f9d156b62a38d03e2a0626856d1d"
+  integrity sha512-CIrj2IncsroYP01IuAq6jmsbEqQjtPmo3qJaf6uM1IQwLv1Wl0bVdvx8pTm+xAWLF7cTMbhnBbBEPZ8kwDsalw==
   dependencies:
     "@sinclair/typebox" "^0.21.2"
     ajv "^8.8.2"
@@ -1943,6 +1959,11 @@ ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
+argparse@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmmirror.com/argparse/-/argparse-2.0.1.tgz#246f50f3ca78a3240f6c997e8a9bd1eac49e4b38"
+  integrity sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==
+
 aria-hidden@^1.1.1:
   version "1.1.3"
   resolved "http://192.168.26.29:7001/aria-hidden/download/aria-hidden-1.1.3.tgz#bb48de18dc84787a3c6eee113709c473c64ec254"
@@ -2039,10 +2060,10 @@ clsx@^1.1.1:
   resolved "http://192.168.26.29:7001/clsx/download/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
   integrity sha1-DdxKIKVJtZyTpBFrsm9SlMoX3BI=
 
-codemirror@^5.63.3:
-  version "5.65.7"
-  resolved "http://192.168.26.29:7001/codemirror/download/codemirror-5.65.7.tgz#29af41ce5f4c2b8f1c1e16f4e645ff392823716a"
-  integrity sha1-Ka9Bzl9MK48cHhb05kX/OSgjcWo=
+codemirror@^5.65.9:
+  version "5.65.11"
+  resolved "https://registry.npmmirror.com/codemirror/-/codemirror-5.65.11.tgz#c818edc3274788c008f636520c5490a1f7009b4f"
+  integrity sha512-Gp62g2eKSCHYt10axmGhKq3WoJSvVpvhXmowNq7pZdRVowwtvBR/hi2LSP5srtctKkRT33T6/n8Kv1UGp7JW4A==
 
 color-convert@^1.9.0, color-convert@^1.9.3:
   version "1.9.3"
@@ -2141,6 +2162,11 @@ css-box-model@1.2.1:
   dependencies:
     tiny-invariant "^1.0.6"
 
+css-what@^3.2.0:
+  version "3.4.2"
+  resolved "https://registry.npmmirror.com/css-what/-/css-what-3.4.2.tgz#ea7026fcb01777edbde52124e21f327e7ae950e4"
+  integrity sha512-ACUm3L0/jiZTqfzRM3Hi9Q8eZqd6IK37mMWPLz9PJxkLWllYeRf+EHUSHYEtFop2Eqytaq1FizFVh7XfBnXCDQ==
+
 csstype@3.0.9:
   version "3.0.9"
   resolved "http://192.168.26.29:7001/csstype/download/csstype-3.0.9.tgz#6410af31b26bd0520933d02cbc64fce9ce3fbf0b"
@@ -2195,8 +2221,13 @@ detect-node-es@^1.1.0:
 
 diff-match-patch@^1.0.0:
   version "1.0.5"
-  resolved "http://192.168.26.29:7001/diff-match-patch/download/diff-match-patch-1.0.5.tgz#abb584d5f10cd1196dfc55aa03701592ae3f7b37"
-  integrity sha1-q7WE1fEM0Rlt/FWqA3AVkq4/ezc=
+  resolved "https://registry.npmmirror.com/diff-match-patch/-/diff-match-patch-1.0.5.tgz#abb584d5f10cd1196dfc55aa03701592ae3f7b37"
+  integrity sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==
+
+diff@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.npmmirror.com/diff/-/diff-5.1.0.tgz#bc52d298c5ea8df9194800224445ed43ffc87e40"
+  integrity sha512-D+mk+qE8VC/PAUrlAU34N+VfXev0ghe5ywmpqrawphmVZc1bEfn56uo9qpyGp1p4xpzOHkSW4ztBd6L7Xx4ACw==
 
 dom-align@^1.7.0:
   version "1.12.3"
@@ -2631,6 +2662,13 @@ isarray@~1.0.0:
   resolved "http://192.168.26.29:7001/js-tokens/download/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
 
+js-yaml@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.npmmirror.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
+
 jsesc@^2.5.1:
   version "2.5.2"
   resolved "http://192.168.26.29:7001/jsesc/download/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
@@ -2653,8 +2691,8 @@ json5@^2.2.1:
 
 jsondiffpatch@^0.4.1:
   version "0.4.1"
-  resolved "http://192.168.26.29:7001/jsondiffpatch/download/jsondiffpatch-0.4.1.tgz#9fb085036767f03534ebd46dcd841df6070c5773"
-  integrity sha1-n7CFA2dn8DU069RtzYQd9gcMV3M=
+  resolved "https://registry.npmmirror.com/jsondiffpatch/-/jsondiffpatch-0.4.1.tgz#9fb085036767f03534ebd46dcd841df6070c5773"
+  integrity sha512-t0etAxTUk1w5MYdNOkZBZ8rvYYN5iL+2dHCCx/DpkFm/bW28M6y5nUS83D4XdZiHy35Fpaw6LBb+F88fHZnVCw==
   dependencies:
     chalk "^2.3.0"
     diff-match-patch "^1.0.0"
@@ -2748,6 +2786,11 @@ nanoid@^3.3.4:
   version "3.3.4"
   resolved "http://192.168.26.29:7001/nanoid/download/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha1-cwtn480J4t6s8DwCfIHJ2dvF6Ks=
+
+node-diff3@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.npmmirror.com/node-diff3/-/node-diff3-3.1.2.tgz#49df8d821dc9cbab87bfd6182171d90169613a97"
+  integrity sha512-wUd9TWy059I8mZdH6G3LPNlAEfxDvXtn/RcyFrbqL3v34WlDxn+Mh4HDhOwWuaMk/ROVepe5tTpnGHbve6Db2g==
 
 node-releases@^2.0.6:
   version "2.0.6"
@@ -3019,7 +3062,7 @@ react-color@^2.19.3:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
-react-dom@^17.0.0, react-dom@^17.0.2:
+"react-dom@16.x || 17.x", react-dom@^17.0.0, react-dom@^17.0.2:
   version "17.0.2"
   resolved "http://192.168.26.29:7001/react-dom/download/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
   integrity sha1-7P+2hF462Nv83EmPDQqTlzZQLCM=
@@ -3045,6 +3088,15 @@ react-fast-compare@^2.0.1:
   version "2.0.4"
   resolved "http://192.168.26.29:7001/react-fast-compare/download/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
   integrity sha1-6EtNRVsP7BE+BALDKTUnFRlvgfk=
+
+react-fiber-traverse@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.npmmirror.com/react-fiber-traverse/-/react-fiber-traverse-0.0.8.tgz#08987681bdeaba2c964593468fe22470e01ab486"
+  integrity sha512-UdCfB6inAFmB1/wT1NdMwqbZIuC2hh+i2vo8L9xy9ULKd2UjqTgxJiZBrF4RXmVmbP0XAFJSFWEz9axzXwKgPw==
+  dependencies:
+    "@babel/runtime" "^7.5.4"
+    css-what "^3.2.0"
+    prop-types "^15.7.2"
 
 react-focus-lock@2.5.0:
   version "2.5.0"
@@ -3194,7 +3246,7 @@ react-transition-group@^4.3.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@^17.0.0, react@^17.0.2:
+"react@16.x || 17.x", react@^17.0.0, react@^17.0.2:
   version "17.0.2"
   resolved "http://192.168.26.29:7001/react/download/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha1-0LXMUW0p6z7uOD91tihkz7aAADc=
@@ -3221,6 +3273,11 @@ readable-stream@^2.0.1:
     safe-buffer "~5.1.1"
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
+
+regenerator-runtime@^0.13.11:
+  version "0.13.11"
+  resolved "https://registry.npmmirror.com/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz#f6dca3e7ceec20590d07ada785636a90cdca17f9"
+  integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
 
 regenerator-runtime@^0.13.4:
   version "0.13.9"

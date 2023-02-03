@@ -6,6 +6,7 @@ import {
   saveModules,
   patchApp,
   patchModules,
+  mergeWithBaseApplication,
 } from "./shared";
 import "@sunmao-ui/arco-lib/dist/index.css";
 import "@sunmao-ui/editor/dist/index.css";
@@ -19,9 +20,21 @@ function Editor(props: BaseProps) {
     utilMethods,
     applicationPatch,
     modulesPatch,
+    applicationBase,
   } = props;
+  const patchedApp = patchApp(applicationBase, applicationPatch);
+  let mergedApp = patchedApp;
+
+  if (applicationBase) {
+    mergedApp = mergeWithBaseApplication(
+      applicationBase,
+      application,
+      patchedApp
+    );
+  }
+
   const { Editor } = initSunmaoUIEditor({
-    defaultApplication: patchApp(application, applicationPatch),
+    defaultApplication: mergedApp,
     defaultModules: patchModules(modules, modulesPatch),
     runtimeProps: {
       libs: getLibs({ ws, handlers, utilMethods }),

@@ -8,10 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sunmao-ui/arco-lib": "^0.3.5-alpha.9",
-    "@sunmao-ui/chakra-ui-lib": "^0.5.5-alpha.9",
-    "@sunmao-ui/editor": "^0.7.5-alpha.9",
-    "@sunmao-ui/runtime": "^0.7.4-alpha.7",
+    "@sunmao-ui/arco-lib": "^0.10.0",
+    "@sunmao-ui/chakra-ui-lib": "^0.10.0",
+    "@sunmao-ui/editor": "^0.10.0",
+    "@sunmao-ui/runtime": "^0.10.0",
+    "@sunmao-ui/resolver": "^0.0.2",
     "jsondiffpatch": "^0.4.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0"
