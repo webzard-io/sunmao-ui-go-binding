@@ -22,9 +22,8 @@ function Editor(props: BaseProps) {
     modulesPatch,
     applicationBase,
   } = props;
-  const patchedApp = patchApp(applicationBase, applicationPatch);
+  const patchedApp = patchApp(applicationBase || application, applicationPatch);
   let mergedApp = patchedApp;
-
   if (applicationBase) {
     mergedApp = mergeWithBaseApplication(
       applicationBase,

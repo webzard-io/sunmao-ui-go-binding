@@ -29,8 +29,8 @@ function App(props: BaseProps) {
     libs: getLibs({ ws, handlers, utilMethods }),
   });
 
-  const patchedApp = patchApp(application, applicationPatch);
-  let mergedApp = patchApp(application, applicationPatch);
+  const patchedApp = patchApp(applicationBase || application, applicationPatch);
+  let mergedApp = patchedApp;
   if (applicationBase) {
     mergedApp = mergeWithBaseApplication(
       applicationBase,
@@ -38,6 +38,7 @@ function App(props: BaseProps) {
       patchedApp
     );
   }
+
   if (modules) {
     patchModules(modules, modulesPatch).forEach((moduleSchema) => {
       registry.registerModule(moduleSchema as RuntimeModule);

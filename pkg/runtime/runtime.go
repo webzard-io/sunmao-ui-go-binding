@@ -85,21 +85,13 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 	json.Unmarshal(currentAppJson, &currentApp)
 	currentAppHash, err := hashstructure.Hash(currentApp, nil)
 
-	isOldBase := appBaseHash == currentAppHash
+	hasBaseAppChanged := appBaseHash != currentAppHash
 
-	// keys := make([]string, 0, len(appBase))
-	// for key := range appBase {
-	// 	keys = append(keys, key)
-	// }
-	// fmt.Println("currentApp", currentApp)
-	fmt.Println("appBase", appBase)
-	fmt.Println("currentApp", currentApp)
-	fmt.Println("isOldBase", isOldBase)
-
-	// appBaseOption := map[string]interface{}{}
-	// if !isOldBase {
-	// 	appBaseOption = appBase
-	// }
+	var applicationBase map[string]interface{}
+	// only when base application has changed, send base application to front end
+	if hasBaseAppChanged {
+		applicationBase = appBase
+	}
 
 	appPatch := map[string]interface{}{}
 	appPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
@@ -123,7 +115,7 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 		"application":              currentApp,
 		"modules":                  modules,
 		"applicationPatch":         appPatch,
-		"applicationBase":          appBase,
+		"applicationBase":          applicationBase,
 		"modulesPatch":             modulesPatch,
 		"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
 		"handlers":                 handlers,
@@ -200,7 +192,6 @@ func (r *Runtime) Run() {
 
 		// save app.base.json
 		baseApp, _ := json.Marshal(r.appBuilder.ValueOf())
-		fmt.Println(string(baseApp))
 		writeBaseErr := os.WriteFile(fmt.Sprintf("%v/app.base.json", r.patchDir), baseApp, os.ModePerm)
 		if writeBaseErr != nil {
 			return writeBaseErr

@@ -40,6 +40,7 @@ export function renderApp(options: MainOptions) {
         )}
         applicationPatch={applicationPatch}
         modulesPatch={modulesPatch}
+        applicationBase={applicationBase}
       />
     </React.StrictMode>,
     document.getElementById("root")!

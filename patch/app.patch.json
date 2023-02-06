@@ -1,17 +1,1 @@
-{
-	"spec": {
-		"components": {
-			"1": {
-				"properties": {
-					"value": {
-						"raw": [
-							"Hello Bowen",
-							"Hello Bowenadsasd"
-						]
-					}
-				}
-			},
-			"_t": "a"
-		}
-	}
-}
+{}
