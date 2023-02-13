@@ -69,37 +69,28 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 		modules[i] = b.ValueOf()
 	}
 
-	appBase := map[string]interface{}{}
-	appBaseBuf, err := os.ReadFile(fmt.Sprintf("%v/app.base.json", r.patchDir))
+	var patchFile PatchFile
+	patchFileBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
 	if err == nil {
-		err = json.Unmarshal(appBaseBuf, &appBase)
+		err = json.Unmarshal(patchFileBuf, &patchFile)
 		if err != nil {
 			return nil, err
 		}
 	}
 
+	appBase := patchFile.Base
 	appBaseHash, err := hashstructure.Hash(appBase, nil)
 	currentAppJson, _ := json.Marshal(r.appBuilder.ValueOf())
-	currentApp := map[string]interface{}{}
+	var currentApp sunmao.Application
 
 	json.Unmarshal(currentAppJson, &currentApp)
 	currentAppHash, err := hashstructure.Hash(currentApp, nil)
 
 	hasBaseAppChanged := appBaseHash != currentAppHash
-
-	var applicationBase map[string]interface{}
+	var applicationBase *sunmao.Application = nil
 	// only when base application has changed, send base application to front end
 	if hasBaseAppChanged {
 		applicationBase = appBase
-	}
-
-	appPatch := map[string]interface{}{}
-	appPatchBuf, err := os.ReadFile(fmt.Sprintf("%v/app.patch.json", r.patchDir))
-	if err == nil {
-		err = json.Unmarshal(appPatchBuf, &appPatch)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	modulesPatch := map[string]interface{}{}
@@ -114,7 +105,7 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 	optionsBuf, err := json.Marshal(map[string]interface{}{
 		"application":              currentApp,
 		"modules":                  modules,
-		"applicationPatch":         appPatch,
+		"applicationPatch":         patchFile.Patch,
 		"applicationBase":          applicationBase,
 		"modulesPatch":             modulesPatch,
 		"reloadWhenWsDisconnected": r.reloadWhenWsDisconnected,
@@ -126,6 +117,11 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 
 	s := string(optionsBuf)
 	return &s, nil
+}
+
+type PatchFile struct {
+	Patch *map[string]interface{} `json:"patch"`
+	Base  *sunmao.Application     `json:"base"`
 }
 
 func (r *Runtime) Run() {
@@ -179,22 +175,20 @@ func (r *Runtime) Run() {
 			return err
 		}
 
-		delta, err := json.MarshalIndent(b.Delta, "", "\t")
+		baseApp := r.appBuilder.ValueOf()
+		patchFile := PatchFile{
+			Base:  &baseApp,
+			Patch: &b.Delta,
+		}
+
+		fileContent, err := json.MarshalIndent(patchFile, "", "\t")
 		if err != nil {
 			return err
 		}
-
 		// save app.patch.json
-		writePatchErr := os.WriteFile(fmt.Sprintf("%v/app.patch.json", r.patchDir), delta, os.ModePerm)
+		writePatchErr := os.WriteFile(fmt.Sprintf("%v/app.patch.json", r.patchDir), fileContent, os.ModePerm)
 		if writePatchErr != nil {
 			return writePatchErr
-		}
-
-		// save app.base.json
-		baseApp, _ := json.Marshal(r.appBuilder.ValueOf())
-		writeBaseErr := os.WriteFile(fmt.Sprintf("%v/app.base.json", r.patchDir), baseApp, os.ModePerm)
-		if writeBaseErr != nil {
-			return writeBaseErr
 		}
 
 		return c.String(http.StatusOK, "ok")
