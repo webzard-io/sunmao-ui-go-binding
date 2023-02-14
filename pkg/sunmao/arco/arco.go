@@ -1,32 +1,21 @@
-package sunmao
+package arco
 
 import (
 	"fmt"
+
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
-// arco-design
-
-type ArcoAppBuilder struct {
-	*AppBuilder
-}
-
-func NewArcoApp() *ArcoAppBuilder {
-	b := &ArcoAppBuilder{
-		AppBuilder: NewApp(),
-	}
-	return b
-}
-
 type ArcoTableComponentBuilder struct {
-	*InnerComponentBuilder[*ArcoTableComponentBuilder]
+	*sunmao.InnerComponentBuilder[*ArcoTableComponentBuilder]
 }
 
 func (b *ArcoAppBuilder) NewTable() *ArcoTableComponentBuilder {
-	t := &ArcoTableComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
+	c := &ArcoTableComponentBuilder{
+		sunmao.NewInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
-	return t.Type("arco/v1/table").Properties(map[string]interface{}{
+	c.Inner = c
+	return c.Type("arco/v1/table").Properties(map[string]interface{}{
 		"pagination": map[string]interface{}{
 			"enablePagination": true,
 			"pageSize":         20,
@@ -45,13 +34,13 @@ func (b *ArcoTableComponentBuilder) Data(data any) *ArcoTableComponentBuilder {
 }
 
 type ArcoTableColumn struct {
-	Title        string           `json:"title"`
-	DataIndex    string           `json:"dataIndex"`
-	Type         string           `json:"type,omitempty"`
-	Sorter       bool             `json:"sorter"`
-	Filter       bool             `json:"filter"`
-	DisplayValue string           `json:"displayValue,omitempty"`
-	Module       *ModuleContainer `json:"module,omitempty"`
+	Title        string                  `json:"title"`
+	DataIndex    string                  `json:"dataIndex"`
+	Type         string                  `json:"type,omitempty"`
+	Sorter       bool                    `json:"sorter"`
+	Filter       bool                    `json:"filter"`
+	DisplayValue string                  `json:"displayValue,omitempty"`
+	Module       *sunmao.ModuleContainer `json:"module,omitempty"`
 }
 
 func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableComponentBuilder {
@@ -63,8 +52,8 @@ func (b *ArcoTableComponentBuilder) Column(column *ArcoTableColumn) *ArcoTableCo
 	return b
 }
 
-func (b *ArcoTableComponentBuilder) OnRowClick(serverHandler *ServerHandler) *ArcoTableComponentBuilder {
-	b._Trait(b.appBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
+func (b *ArcoTableComponentBuilder) OnRowClick(serverHandler *sunmao.ServerHandler) *ArcoTableComponentBuilder {
+	b.Trait(b.AppBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
 		"handlers": []map[string]interface{}{
 			{
 				"type":        "onRowClick",
@@ -80,15 +69,15 @@ func (b *ArcoTableComponentBuilder) OnRowClick(serverHandler *ServerHandler) *Ar
 }
 
 type ArcoTabsComponentBuilder struct {
-	*InnerComponentBuilder[*ArcoTabsComponentBuilder]
+	*sunmao.InnerComponentBuilder[*ArcoTabsComponentBuilder]
 }
 
 func (b *ArcoAppBuilder) NewTabs() *ArcoTabsComponentBuilder {
-	t := &ArcoTabsComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ArcoTabsComponentBuilder](b.AppBuilder),
+	c := &ArcoTabsComponentBuilder{
+		sunmao.NewInnerComponent[*ArcoTabsComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
-	return t.Type("arco/v1/tabs").Properties(map[string]interface{}{
+	c.Inner = c
+	return c.Type("arco/v1/tabs").Properties(map[string]interface{}{
 		"type":                          "line",
 		"defaultActiveTab":              0,
 		"tabPosition":                   "top",

@@ -66,16 +66,16 @@ func NewApp() *AppBuilder {
 
 var componentCount = 0
 
-func newInnerComponent[K any](builder *AppBuilder) *InnerComponentBuilder[K] {
+func NewInnerComponent[K any](builder *AppBuilder) *InnerComponentBuilder[K] {
 	componentCount = componentCount + 1
 	return &InnerComponentBuilder[K]{
-		component: ComponentSchema{
+		Component: ComponentSchema{
 			Id:         "component" + fmt.Sprint(componentCount),
 			Type:       "",
 			Properties: map[string]interface{}{},
 			Traits:     []TraitSchema{},
 		},
-		appBuilder: builder,
+		AppBuilder: builder,
 	}
 }
 
@@ -173,9 +173,9 @@ type BaseComponentBuilder interface {
 }
 
 type InnerComponentBuilder[K any] struct {
-	inner      K
-	component  ComponentSchema
-	appBuilder *AppBuilder
+	Inner      K
+	Component  ComponentSchema
+	AppBuilder *AppBuilder
 }
 
 type ComponentBuilder struct {
@@ -184,63 +184,63 @@ type ComponentBuilder struct {
 
 func (b *AppBuilder) NewComponent() *ComponentBuilder {
 	t := &ComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ComponentBuilder](b),
+		InnerComponentBuilder: NewInnerComponent[*ComponentBuilder](b),
 	}
-	t.inner = t
+	t.Inner = t
 	return t
 }
 
 func (b *InnerComponentBuilder[K]) ValueOf() ComponentSchema {
-	return b.component
+	return b.Component
 }
 
 func (b *InnerComponentBuilder[K]) Id(id string) K {
-	b.component.Id = id
-	return b.inner
+	b.Component.Id = id
+	return b.Inner
 }
 
 func (b *InnerComponentBuilder[K]) Type(t string) K {
-	b.component.Type = t
-	return b.inner
+	b.Component.Type = t
+	return b.Inner
 }
 
 func (b *InnerComponentBuilder[K]) Properties(properties map[string]interface{}) K {
 	for k, v := range properties {
-		b.component.Properties[k] = v
+		b.Component.Properties[k] = v
 	}
-	return b.inner
+	return b.Inner
 }
 
 // type hack
 func (b *InnerComponentBuilder[K]) _Trait(builder BaseTraitBuilder) {
-	b.component.Traits = append(b.component.Traits, builder.ValueOf())
+	b.Component.Traits = append(b.Component.Traits, builder.ValueOf())
 }
 
 func (b *InnerComponentBuilder[K]) Trait(builder BaseTraitBuilder) K {
 	b._Trait(builder)
-	return b.inner
+	return b.Inner
 }
 
 func (b *InnerComponentBuilder[K]) Children(slots map[string][]BaseComponentBuilder) K {
 	for slot := range slots {
 		for _, builder := range slots[slot] {
-			builder._Trait(b.appBuilder.NewTrait().
+			builder._Trait(b.AppBuilder.NewTrait().
 				Type("core/v2/slot").Properties(map[string]interface{}{
 				"container": map[string]interface{}{
-					"id":   b.component.Id,
+					"id":   b.Component.Id,
 					"slot": slot,
 				},
 				"ifCondition": true,
 			}))
-			parentId := b.component.Id
-			b.appBuilder.childrenQueue[parentId] = append(b.appBuilder.childrenQueue[parentId], builder)
+			parentId := b.Component.Id
+			b.AppBuilder.childrenQueue[parentId] = append(b.AppBuilder.childrenQueue[parentId], builder)
 		}
 	}
-	return b.inner
+	return b.Inner
 }
 
 func (b *InnerComponentBuilder[K]) Style(styleSlot string, css string) K {
-	b._Trait(b.appBuilder.NewTrait().Type("core/v1/style").Properties(map[string]interface{}{
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/style").Properties(map[string]interface{}{
 		"styles": []map[string]interface{}{
 			{
 				"styleSlot": styleSlot,
@@ -248,14 +248,14 @@ func (b *InnerComponentBuilder[K]) Style(styleSlot string, css string) K {
 			},
 		},
 	}))
-	return b.inner
+	return b.Inner
 }
 
 func (b *InnerComponentBuilder[K]) Hidden(when string) K {
-	b._Trait(b.appBuilder.NewTrait().Type("core/v1/hidden").Properties(map[string]interface{}{
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/hidden").Properties(map[string]interface{}{
 		"hidden": when,
 	}))
-	return b.inner
+	return b.Inner
 }
 
 // Trait
@@ -299,9 +299,9 @@ type StackComponentBuilder struct {
 
 func (b *AppBuilder) NewStack() *StackComponentBuilder {
 	t := &StackComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*StackComponentBuilder](b),
+		InnerComponentBuilder: NewInnerComponent[*StackComponentBuilder](b),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("core/v1/stack")
 }
 
@@ -311,9 +311,9 @@ type TextComponentBuilder struct {
 
 func (b *AppBuilder) NewText() *TextComponentBuilder {
 	t := &TextComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*TextComponentBuilder](b),
+		InnerComponentBuilder: NewInnerComponent[*TextComponentBuilder](b),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("core/v1/text")
 }
 
@@ -359,11 +359,46 @@ func (b *ChakraUIAppBuilder) Component(builder BaseComponentBuilder) *ChakraUIAp
 	return b
 }
 
+// -----
+
+type ArcoAppBuilder struct {
+	AppBuilder *AppBuilder
+}
+
+func NewArcoApp() *ArcoAppBuilder {
+	b := &ArcoAppBuilder{
+		AppBuilder: NewApp(),
+	}
+	return b
+}
+
+type ArcoTableComponentBuilder struct {
+	*InnerComponentBuilder[*ArcoTableComponentBuilder]
+}
+
+func (b *ArcoAppBuilder) NewTable() *ArcoTableComponentBuilder {
+	t := &ArcoTableComponentBuilder{
+		InnerComponentBuilder: NewInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
+	}
+	t.Inner = t
+	return t.Type("arco/v1/table").Properties(map[string]interface{}{
+		"pagination": map[string]interface{}{
+			"enablePagination": true,
+			"pageSize":         20,
+		},
+		"rowKey":  "name",
+		"data":    []interface{}{},
+		"columns": []interface{}{},
+	})
+}
+
+// -----
+
 func (b *ChakraUIAppBuilder) NewInput() *ComponentBuilder {
 	t := &ComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ComponentBuilder](b.AppBuilder),
+		InnerComponentBuilder: NewInnerComponent[*ComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("chakra_ui/v1/input")
 }
 
@@ -373,9 +408,9 @@ type ChakraTableComponentBuilder struct {
 
 func (b *ChakraUIAppBuilder) NewTable() *ChakraTableComponentBuilder {
 	t := &ChakraTableComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ChakraTableComponentBuilder](b.AppBuilder),
+		InnerComponentBuilder: NewInnerComponent[*ChakraTableComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("chakra_ui/v1/table").Properties(map[string]interface{}{
 		"rowsPerPage": 20,
 		"majorKey":    "name",
@@ -412,9 +447,9 @@ type ChakraButtonComponentBuilder struct {
 
 func (b *ChakraUIAppBuilder) NewButton() *ChakraButtonComponentBuilder {
 	t := &ChakraButtonComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ChakraButtonComponentBuilder](b.AppBuilder),
+		InnerComponentBuilder: NewInnerComponent[*ChakraButtonComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("chakra_ui/v1/button")
 }
 
@@ -427,7 +462,7 @@ func (b *ChakraButtonComponentBuilder) Content(value string) *ChakraButtonCompon
 }
 
 func (b *ChakraButtonComponentBuilder) OnClick(serverHandler *ServerHandler) *ChakraButtonComponentBuilder {
-	b._Trait(b.appBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
 		"handlers": []map[string]interface{}{
 			{
 				"type":        "onClick",
@@ -448,9 +483,9 @@ type ChakraLinkComponentBuilder struct {
 
 func (b *ChakraUIAppBuilder) NewLink() *ChakraLinkComponentBuilder {
 	t := &ChakraLinkComponentBuilder{
-		InnerComponentBuilder: newInnerComponent[*ChakraLinkComponentBuilder](b.AppBuilder),
+		InnerComponentBuilder: NewInnerComponent[*ChakraLinkComponentBuilder](b.AppBuilder),
 	}
-	t.inner = t
+	t.Inner = t
 	return t.Type("chakra_ui/v1/link")
 }
 

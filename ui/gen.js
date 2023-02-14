@@ -1,5 +1,5 @@
 const { ArcoDesignLib } = require("@sunmao-ui/arco-lib");
-const { K8sLib } = require("kui-shadow");
+// const { K8sLib } = require("kui-shadow");
 const fs = require("fs");
 
 const libName = "Arco";
@@ -23,20 +23,20 @@ function format(c) {
   const className = `${libName}${upperName}${versionName}`;
   const template = `
 type ${className}ComponentBuilder struct {
-  *InnerComponentBuilder[*${className}ComponentBuilder]
+  *sunmao.InnerComponentBuilder[*${className}ComponentBuilder]
 }
 
 func (b *${libName}AppBuilder) New${versionName}${upperName}() *${className}ComponentBuilder {
-  t := &${className}ComponentBuilder{
-    InnerComponentBuilder: newInnerComponent[*${className}ComponentBuilder](b.AppBuilder),
-  }
-  t.inner = t
-  var jsonBlob = []byte(\`${JSON.stringify(c.metadata.exampleProperties)}\`)
+	c := &${className}ComponentBuilder{
+		sunmao.NewInnerComponent[*${className}ComponentBuilder](b.AppBuilder),
+	}
+	c.Inner = c
 
+  var jsonBlob = []byte(\`${JSON.stringify(c.metadata.exampleProperties)}\`)
   result := map[string]interface{}{}
   json.Unmarshal(jsonBlob, &result)
 
-  return t.Type("${version}/${name}").Properties(result)
+  return c.Type("${version}/${name}").Properties(result)
 }
 `;
 
@@ -51,13 +51,24 @@ const code = ArcoDesignLib.components
 console.log(code);
 
 const fileContent = `
-package sunmao
+package ${libName.toLowerCase()}
 
 import (
 	"encoding/json"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
+type ${libName}AppBuilder struct {
+	*sunmao.AppBuilder
+}
+
+func New${libName}App(appBuilder *sunmao.AppBuilder) *${libName}AppBuilder {
+	b := &${libName}AppBuilder{
+		appBuilder,
+	}
+	return b
+}
 ${code}
 `
 
-fs.writeFileSync("../pkg/sunmao/arcoGenerated.go", fileContent);
+fs.writeFileSync("../pkg/sunmao/arco/arcoGenerated.go", fileContent);
