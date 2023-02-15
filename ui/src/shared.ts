@@ -1,6 +1,6 @@
 import { sunmaoChakraUILib } from "@sunmao-ui/chakra-ui-lib";
 import { ArcoDesignLib } from "@sunmao-ui/arco-lib";
-import type { Application, Module } from "@sunmao-ui/core";
+import type { Application, Module, ComponentSchema } from "@sunmao-ui/core";
 import {
   implementUtilMethod,
   initSunmaoUI,
@@ -8,6 +8,13 @@ import {
 } from "@sunmao-ui/runtime";
 import { useEffect } from "react";
 import * as jdp from "jsondiffpatch";
+import {
+  mergeApplication,
+  resolveApplication,
+  DiffBlock,
+  resolveJson,
+  PropsDiffBlock,
+} from "@sunmao-ui/resolver";
 
 export function getLibs({
   ws,
@@ -89,7 +96,11 @@ export type BaseProps = {
   utilMethods?: UtilMethodFactory[];
 } & Pick<
   MainOptions,
-  "application" | "modules" | "applicationPatch" | "modulesPatch"
+  | "application"
+  | "modules"
+  | "applicationPatch"
+  | "modulesPatch"
+  | "applicationBase"
 >;
 
 export type MainOptions = {
@@ -100,6 +111,7 @@ export type MainOptions = {
   handlers: string[];
   utilMethods?: { options: any; impl: any }[];
   applicationPatch?: any;
+  applicationBase?: any;
   modulesPatch?: any;
 };
 
@@ -159,4 +171,61 @@ export function patchModules(base: Module[], delta?: jdp.Delta): Module[] {
   return isEmptyDelta(delta)
     ? base
     : diffpatcher.patch(diffpatcher.clone(base), delta!);
+}
+
+type PropsConflictMap = Record<string, "a" | "b">;
+
+// merge patched application and lastest application from go
+export function mergeWithBaseApplication(
+  base: Application,
+  latest: Application,
+  patched: Application
+): Application {
+  // default use latest version when conflict, so don't mix the parameters' order
+  const { diffBlocks, map, appSkeleton } = mergeApplication(
+    base,
+    latest,
+    patched
+  );
+  let checkedHashes: string[] = [];
+  let resolvedComponentsIdMap: Record<
+    string,
+    ComponentSchema<Record<string, unknown>>
+  > = {};
+  const checkedPropsMap: PropsConflictMap = {};
+
+  diffBlocks.forEach((block) => {
+    switch (block.kind) {
+      case "conflict":
+        checkedHashes = checkedHashes.concat(block.aHashes);
+        break;
+      case "change":
+        if (block.hasConflict) {
+          checkedHashes.push(block.hashA);
+          block.diffBlocks.forEach(propsUseA);
+          const component = resolveJson(block.diffBlocks, checkedPropsMap);
+          resolvedComponentsIdMap[block.id] = component as ComponentSchema;
+        }
+    }
+  });
+
+  function propsUseA(block: PropsDiffBlock) {
+    switch (block.kind) {
+      case "conflict":
+        checkedPropsMap[block.path] = "a";
+        break;
+      case "change":
+        if (block.childrenHasConflict) {
+          block.children.forEach(propsUseA);
+        }
+    }
+  }
+
+  return resolveApplication({
+    diffBlocks,
+    hashMap: map,
+    checkedHashes,
+    resolvedComponentsIdMap,
+    appSkeleton,
+  });
 }

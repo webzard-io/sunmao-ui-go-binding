@@ -14,6 +14,7 @@ export function renderApp(options: MainOptions) {
     utilMethods,
     applicationPatch,
     modulesPatch,
+    applicationBase
   } = options;
   const ws = new WebSocket(wsUrl);
   ws.onopen = () => {
@@ -39,6 +40,7 @@ export function renderApp(options: MainOptions) {
         )}
         applicationPatch={applicationPatch}
         modulesPatch={modulesPatch}
+        applicationBase={applicationBase}
       />
     </React.StrictMode>,
     document.getElementById("root")!

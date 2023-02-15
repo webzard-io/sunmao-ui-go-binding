@@ -2,8 +2,6 @@ package sunmao
 
 import (
 	"fmt"
-
-	gonanoid "github.com/matoous/go-nanoid/v2"
 )
 
 // layer 1
@@ -37,7 +35,8 @@ func (b *BaseBuilder[T]) Annotation(key string, value string) T {
 
 type AppBuilder struct {
 	*BaseBuilder[*AppBuilder]
-	application Application
+	application   Application
+	childrenQueue map[string][]BaseComponentBuilder
 }
 
 func NewApp() *AppBuilder {
@@ -56,18 +55,22 @@ func NewApp() *AppBuilder {
 			Spec: ApplicationSpec{
 				Components: []ComponentSchema{},
 			},
-		}}
+		},
+		childrenQueue: map[string][]BaseComponentBuilder{},
+	}
 
 	b.inner = b
 	b.setter = b.application
 	return b
 }
 
+var componentCount = 0
+
 func newInnerComponent[K any](builder *AppBuilder) *InnerComponentBuilder[K] {
-	id, _ := gonanoid.Generate("abcdefghijklmn_", 6)
+	componentCount = componentCount + 1
 	return &InnerComponentBuilder[K]{
 		component: ComponentSchema{
-			Id:         id,
+			Id:         "component" + fmt.Sprint(componentCount),
 			Type:       "",
 			Properties: map[string]interface{}{},
 			Traits:     []TraitSchema{},
@@ -95,7 +98,15 @@ func (b *AppBuilder) Component(builder BaseComponentBuilder) *AppBuilder {
 }
 
 func (b *AppBuilder) component(builder BaseComponentBuilder) {
-	b.application.Spec.Components = append(b.application.Spec.Components, builder.ValueOf())
+	componentSchema := builder.ValueOf()
+	b.application.Spec.Components = append(b.application.Spec.Components, componentSchema)
+
+	// append children component after their parent and then clear
+	_queue := b.childrenQueue[componentSchema.Id]
+	b.childrenQueue[componentSchema.Id] = []BaseComponentBuilder{}
+	for _, c := range _queue {
+		b.component(c)
+	}
 }
 
 type ModuleBuilder struct {
@@ -220,7 +231,8 @@ func (b *InnerComponentBuilder[K]) Children(slots map[string][]BaseComponentBuil
 					"slot": slot,
 				},
 			}))
-			b.appBuilder.Component(builder)
+			parentId := b.component.Id
+			b.appBuilder.childrenQueue[parentId] = append(b.appBuilder.childrenQueue[parentId], builder)
 		}
 	}
 	return b.inner
@@ -340,6 +352,7 @@ func (b *ChakraUIAppBuilder) Component(builder BaseComponentBuilder) *ChakraUIAp
 			},
 		}))
 	}
+
 	b.component(builder)
 	return b
 }
