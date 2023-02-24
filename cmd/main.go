@@ -6,28 +6,41 @@ import (
 	"os"
 	"time"
 
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/dovetail"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao/arco"
 )
 
 func main() {
 	// init the runtime
 	r := runtime.New("ui", "patch")
 	// init an App builder, use a lib
+	app := sunmao.NewApp()
 	b := sunmao.NewChakraUIApp()
+	d := dovetail.NewDovetailApp(app)
 
-	arcoB := sunmao.NewArcoApp()
+	arcoB := arco.NewArcoApp(app)
 
 	// build some UI in code, perfect it in the browser!
 	// more UI
-	b.Component(b.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
+	app.Component(app.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
 		"content": {
-			b.NewText().Content("Hello Sunmao"),
-			b.NewInput().Id("my_input"),
+			app.NewText().Content("呵呵呵"),
+			app.NewText().Content("哈哈哈123"),
+			app.NewText().Content("Hello Sunmao!!!"),
+			arcoB.NewTable(),
+			arcoB.NewButton(),
 		},
 	}).Properties(map[string]interface{}{
 		"direction": "vertical",
 	}))
+	app.Component(d.NewRoot().Children((map[string][]sunmao.BaseComponentBuilder{
+		"root": {
+			d.NewButton(),
+			d.NewKubectlGetTable(),
+		},
+	})))
 
 	// use server dynamic data
 	entries, _ := os.ReadDir(".")
@@ -42,23 +55,18 @@ func main() {
 		})
 	}
 
-	b.Component(arcoB.NewTabs().Id("tabs").
-		Tab(&sunmao.ArcoTabsTab{Title: "Tab 1"}).
-		Tab(&sunmao.ArcoTabsTab{Title: "Tab 2"}).
-		Tab(&sunmao.ArcoTabsTab{Title: "Tab 3"}))
-
-	b.Component(arcoB.NewTable().Data(data).Column(&sunmao.ArcoTableColumn{
+	app.Component(arcoB.NewTable().Data(data).Column(&arco.ArcoTableColumn{
 		DataIndex:    "name",
 		Title:        "Name",
 		Type:         "link",
 		DisplayValue: "{{ $listItem.name }} - {{ $listItem.size }}",
-	}).Column(&sunmao.ArcoTableColumn{
+	}).Column(&arco.ArcoTableColumn{
 		DataIndex: "size",
 		Title:     "File Size",
-	}).Column(&sunmao.ArcoTableColumn{
+	}).Column(&arco.ArcoTableColumn{
 		DataIndex: "modTime",
 		Title:     "Modify Time",
-	}).Column(&sunmao.ArcoTableColumn{
+	}).Column(&arco.ArcoTableColumn{
 		Title:     "Type",
 		DataIndex: "is_dir",
 		Type:      "module",
@@ -148,7 +156,7 @@ func main() {
 		return nil
 	})
 
-	b.Component(b.NewButton().Content("click to debug").
+	app.Component(b.NewButton().Content("click to debug").
 		OnClick(&sunmao.ServerHandler{
 			Name: "debug",
 			Parameters: map[string]interface{}{
@@ -158,7 +166,7 @@ func main() {
 		}))
 
 	r.LoadModule(fileTypeModule)
-	r.LoadApp(b.AppBuilder)
+	r.LoadApp(app)
 
 	// start the runtime
 	r.Run()
