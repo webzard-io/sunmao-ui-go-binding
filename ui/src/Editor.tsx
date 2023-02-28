@@ -10,7 +10,8 @@ import {
 } from "./shared";
 import "@sunmao-ui/arco-lib/dist/index.css";
 import "@sunmao-ui/editor/dist/index.css";
-import 'kui-shadow/dist/style.css';
+import { editorWidgets } from '@dovetail-ui/ui/dist/widgets';
+import '@dovetail-ui/ui/dist/style.css';
 
 function Editor(props: BaseProps) {
   const {
@@ -34,6 +35,7 @@ function Editor(props: BaseProps) {
   }
 
   const { Editor } = initSunmaoUIEditor({
+    widgets: editorWidgets,
     defaultApplication: mergedApp,
     defaultModules: patchModules(modules, modulesPatch),
     runtimeProps: {

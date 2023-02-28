@@ -15,7 +15,7 @@ import {
   resolveJson,
   PropsDiffBlock,
 } from "@sunmao-ui/resolver";
-import { K8sLib } from "kui-shadow";
+import { K8sLib } from "@dovetail-ui/ui";
 
 export function getLibs({
   ws,

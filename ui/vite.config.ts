@@ -14,6 +14,7 @@ export default defineConfig({
     },
   },
   define: {
+    global: "globalThis",
     "process.platform": '"web"',
   },
 });

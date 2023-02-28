@@ -1,24 +1,24 @@
-package dovetail
 
-import (
-	"encoding/json"
-
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
-)
-
-type DovetailAppBuilder struct {
-	*sunmao.AppBuilder
-}
-
-func NewDovetailApp(appBuilder *sunmao.AppBuilder) *DovetailAppBuilder {
-	b := &DovetailAppBuilder{
-		appBuilder,
-	}
-	return b
-}
-
+  package dovetail
+  
+  import (
+    "encoding/json"
+    "github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
+  )
+  
+  type DovetailAppBuilder struct {
+    *sunmao.AppBuilder
+  }
+  
+  func NewDovetailApp(appBuilder *sunmao.AppBuilder) *DovetailAppBuilder {
+    b := &DovetailAppBuilder{
+      appBuilder,
+    }
+    return b
+  }
+  
 type DovetailRootComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailRootComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailRootComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewRoot() *DovetailRootComponentBuilder {
@@ -27,15 +27,15 @@ func (b *DovetailAppBuilder) NewRoot() *DovetailRootComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/root").Properties(result)
+  return c.Type("kui/v1/root").Properties(result)
 }
 
 type DovetailButtonComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailButtonComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailButtonComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewButton() *DovetailButtonComponentBuilder {
@@ -44,15 +44,15 @@ func (b *DovetailAppBuilder) NewButton() *DovetailButtonComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"type":"primary","text":{"raw":"text","format":"plain"}}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"type":"primary","text":{"raw":"text","format":"plain"}}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/button").Properties(result)
+  return c.Type("kui/v1/button").Properties(result)
 }
 
 type DovetailKubectlGetTableComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailKubectlGetTableComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailKubectlGetTableComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewKubectlGetTable() *DovetailKubectlGetTableComponentBuilder {
@@ -61,15 +61,15 @@ func (b *DovetailAppBuilder) NewKubectlGetTable() *DovetailKubectlGetTableCompon
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"basePath":"proxy-k8s","apiBase":"apis/kubesmart.smtx.io/v1alpha1","resource":"kubesmartclusters","columns":[{"key":"name","title":"Name","dataIndex":"metadata.name","width":100,"sortType":"auto","filters":[]},{"key":"namespace","title":"Namespace","dataIndex":"metadata.namespace","sortType":"none","width":200,"filters":[]},{"key":"age","title":"Age","dataIndex":"metadata.creationTimestamp","sortType":"auto","width":100,"filters":[]}],"canActive":true,"defaultSize":10,"empty":"No Data."}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"basePath":"proxy-k8s","apiBase":"apis/kubesmart.smtx.io/v1alpha1","resource":"kubesmartclusters","columns":[{"key":"name","title":"Name","dataIndex":"metadata.name","width":100,"sortType":"auto","filters":[]},{"key":"namespace","title":"Namespace","dataIndex":"metadata.namespace","sortType":"none","width":200,"filters":[]},{"key":"age","title":"Age","dataIndex":"metadata.creationTimestamp","sortType":"auto","width":100,"filters":[]}],"canActive":true,"defaultSize":10,"empty":"No Data."}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/kubectl_get_table").Properties(result)
+  return c.Type("kui/v1/kubectl_get_table").Properties(result)
 }
 
 type DovetailObjectAgeComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailObjectAgeComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailObjectAgeComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewObjectAge() *DovetailObjectAgeComponentBuilder {
@@ -78,15 +78,15 @@ func (b *DovetailAppBuilder) NewObjectAge() *DovetailObjectAgeComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"date":"2022-01-01"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"date":"2022-01-01"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/object_age").Properties(result)
+  return c.Type("kui/v1/object_age").Properties(result)
 }
 
 type DovetailUnstructuredSidebarComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailUnstructuredSidebarComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailUnstructuredSidebarComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewUnstructuredSidebar() *DovetailUnstructuredSidebarComponentBuilder {
@@ -95,15 +95,15 @@ func (b *DovetailAppBuilder) NewUnstructuredSidebar() *DovetailUnstructuredSideb
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"item":{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"name":"nginx-deployment","labels":{"app":"nginx"}},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"nginx"}},"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"name":"nginx","image":"nginx:1.14.2","ports":[{"containerPort":80}]}]}}}},"defaultVisible":true}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"item":{"apiVersion":"apps/v1","kind":"Deployment","metadata":{"name":"nginx-deployment","labels":{"app":"nginx"}},"spec":{"replicas":3,"selector":{"matchLabels":{"app":"nginx"}},"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"name":"nginx","image":"nginx:1.14.2","ports":[{"containerPort":80}]}]}}}},"defaultVisible":true}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/unstructured_sidebar").Properties(result)
+  return c.Type("kui/v1/unstructured_sidebar").Properties(result)
 }
 
 type DovetailUnstructuredPageComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailUnstructuredPageComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailUnstructuredPageComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewUnstructuredPage() *DovetailUnstructuredPageComponentBuilder {
@@ -112,15 +112,15 @@ func (b *DovetailAppBuilder) NewUnstructuredPage() *DovetailUnstructuredPageComp
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"kind":"Deployment","apiBase":"apis/apps/v1/deployments","defaultVisible":true}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"kind":"Deployment","apiBase":"apis/apps/v1/deployments","defaultVisible":true}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/unstructured_page").Properties(result)
+  return c.Type("kui/v1/unstructured_page").Properties(result)
 }
 
 type DovetailModalComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailModalComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailModalComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewModal() *DovetailModalComponentBuilder {
@@ -129,15 +129,15 @@ func (b *DovetailAppBuilder) NewModal() *DovetailModalComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"title":"Header"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"title":"Header"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/modal").Properties(result)
+  return c.Type("kui/v1/modal").Properties(result)
 }
 
 type DovetailSelectComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailSelectComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailSelectComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewSelect() *DovetailSelectComponentBuilder {
@@ -146,15 +146,15 @@ func (b *DovetailAppBuilder) NewSelect() *DovetailSelectComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"options":[{"text":"option 1","value":1},{"text":"option 2","value":"2"}]}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"options":[{"text":"option 1","value":1},{"text":"option 2","value":"2"}]}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/select").Properties(result)
+  return c.Type("kui/v1/select").Properties(result)
 }
 
 type DovetailIconComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailIconComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailIconComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewIcon() *DovetailIconComponentBuilder {
@@ -163,15 +163,15 @@ func (b *DovetailAppBuilder) NewIcon() *DovetailIconComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"name":"ExpandAltOutlined"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"name":"ExpandAltOutlined"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/icon").Properties(result)
+  return c.Type("kui/v1/icon").Properties(result)
 }
 
 type DovetailCodeEditorComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailCodeEditorComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailCodeEditorComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewCodeEditor() *DovetailCodeEditorComponentBuilder {
@@ -180,15 +180,15 @@ func (b *DovetailAppBuilder) NewCodeEditor() *DovetailCodeEditorComponentBuilder
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"defaultValue":"console.log('hello world')","language":"javascript"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"defaultValue":"console.log('hello world')","language":"javascript"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/code_editor").Properties(result)
+  return c.Type("kui/v1/code_editor").Properties(result)
 }
 
 type DovetailKubectlApplyFormComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailKubectlApplyFormComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailKubectlApplyFormComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewKubectlApplyForm() *DovetailKubectlApplyFormComponentBuilder {
@@ -197,15 +197,15 @@ func (b *DovetailAppBuilder) NewKubectlApplyForm() *DovetailKubectlApplyFormComp
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"applyConfig":{"create":true,"patch":true},"formConfig":{"yaml":"","schemas":[],"defaultValues":[],"uiConfig":{"layout":{"type":"simple","fields":[]}}}}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"formConfig":{"yaml":"","schemas":[],"defaultValues":[],"uiConfig":{"layout":{"type":"simple","fields":[]}}}}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/kubectl_apply_form").Properties(result)
+  return c.Type("kui/v1/kubectl_apply_form").Properties(result)
 }
 
 type DovetailKubectlGetDetailComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailKubectlGetDetailComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailKubectlGetDetailComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewKubectlGetDetail() *DovetailKubectlGetDetailComponentBuilder {
@@ -214,15 +214,15 @@ func (b *DovetailAppBuilder) NewKubectlGetDetail() *DovetailKubectlGetDetailComp
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"basePath":"proxy-k8s","apiBase":"/apis/apps/v1","namespace":"kube-system","resource":"deployments","name":"coredns","layout":{"type":"tabs","tabs":[{"label":"Detail","key":"detail","sections":[{"title":"","info":{"metadata":[{"label":"Name","path":"metadata.name"},{"label":"Labels","path":"metadata.labels"},{"label":"Age","path":"metadata.creationTimestamp"}]}}]},{"label":"Monitor","key":"monitor","sections":[]}],"sections":[]}}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"basePath":"/api/k8s","apiBase":"/apis/storage.k8s.io/v1","namespace":"","resource":"storageclasses","name":"","layout":{"type":"tabs","tabs":[{"label":"Detail","key":"detail","sections":[{"title":"","info":{"metadata":[{"label":"Name","path":"metadata.name","condition":true},{"label":"Labels","path":"metadata.labels","condition":true},{"label":"Age","path":"metadata.creationTimestamp","condition":true}]}}]},{"label":"Monitor","key":"monitor","sections":[]}],"sections":[]},"query":{}}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/kubectl_get_detail").Properties(result)
+  return c.Type("kui/v1/kubectl_get_detail").Properties(result)
 }
 
 type DovetailKubectlGetListComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailKubectlGetListComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailKubectlGetListComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewKubectlGetList() *DovetailKubectlGetListComponentBuilder {
@@ -231,15 +231,15 @@ func (b *DovetailAppBuilder) NewKubectlGetList() *DovetailKubectlGetListComponen
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"basePath":"proxy-k8s","apiBase":"apis/kubesmart.smtx.io/v1alpha1","resource":"kubesmartclusters"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"basePath":"proxy-k8s","apiBase":"apis/kubesmart.smtx.io/v1alpha1","resource":"kubesmartclusters"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/kubectl_get_list").Properties(result)
+  return c.Type("kui/v1/kubectl_get_list").Properties(result)
 }
 
 type DovetailModalV2ComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailModalV2ComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailModalV2ComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewV2Modal() *DovetailModalV2ComponentBuilder {
@@ -248,15 +248,15 @@ func (b *DovetailAppBuilder) NewV2Modal() *DovetailModalV2ComponentBuilder {
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"title":"Header","zIndex":1000}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"title":"Header","zIndex":1000}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v2/modal").Properties(result)
+  return c.Type("kui/v2/modal").Properties(result)
 }
 
 type DovetailConfirmModalComponentBuilder struct {
-	*sunmao.InnerComponentBuilder[*DovetailConfirmModalComponentBuilder]
+  *sunmao.InnerComponentBuilder[*DovetailConfirmModalComponentBuilder]
 }
 
 func (b *DovetailAppBuilder) NewConfirmModal() *DovetailConfirmModalComponentBuilder {
@@ -265,9 +265,45 @@ func (b *DovetailAppBuilder) NewConfirmModal() *DovetailConfirmModalComponentBui
 	}
 	c.Inner = c
 
-	var jsonBlob = []byte(`{"width":492,"title":"Delete","errors":[],"size":"small"}`)
-	result := map[string]interface{}{}
-	json.Unmarshal(jsonBlob, &result)
+  var jsonBlob = []byte(`{"width":492,"title":"Delete","errors":[],"size":"small"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
 
-	return c.Type("kui/v1/confirm_modal").Properties(result)
+  return c.Type("kui/v1/confirm_modal").Properties(result)
 }
+
+type DovetailK8sLabelGroupComponentBuilder struct {
+  *sunmao.InnerComponentBuilder[*DovetailK8sLabelGroupComponentBuilder]
+}
+
+func (b *DovetailAppBuilder) NewK8sLabelGroup() *DovetailK8sLabelGroupComponentBuilder {
+	c := &DovetailK8sLabelGroupComponentBuilder{
+		sunmao.NewInnerComponent[*DovetailK8sLabelGroupComponentBuilder](b.AppBuilder),
+	}
+	c.Inner = c
+
+  var jsonBlob = []byte(`{"labels":{},"editable":false}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
+
+  return c.Type("kui/v1/k8s_label_group").Properties(result)
+}
+
+type DovetailK8sNamespaceSelectComponentBuilder struct {
+  *sunmao.InnerComponentBuilder[*DovetailK8sNamespaceSelectComponentBuilder]
+}
+
+func (b *DovetailAppBuilder) NewK8sNamespaceSelect() *DovetailK8sNamespaceSelectComponentBuilder {
+	c := &DovetailK8sNamespaceSelectComponentBuilder{
+		sunmao.NewInnerComponent[*DovetailK8sNamespaceSelectComponentBuilder](b.AppBuilder),
+	}
+	c.Inner = c
+
+  var jsonBlob = []byte(`{"placeholder":"Please select"}`)
+  result := map[string]interface{}{}
+  json.Unmarshal(jsonBlob, &result)
+
+  return c.Type("kui/v1/k8s_namespace_select").Properties(result)
+}
+
+  
