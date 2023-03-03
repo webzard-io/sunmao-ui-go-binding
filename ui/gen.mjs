@@ -1,8 +1,12 @@
-const { ArcoDesignLib } = require("@sunmao-ui/arco-lib");
-// const { K8sLib } = require("kui-shadow");
-const fs = require("fs");
+// const { ArcoDesignLib } = require("@sunmao-ui/arco-lib");
+import fs from "fs";
+import path from "path";
+import { JSDOM } from "jsdom";
 
-const libName = "Arco";
+// compatible with the dovetail code
+global.document = new JSDOM(`<!DOCTYPE html><p></p>`).window.document;
+
+const libName = "Dovetail";
 
 // These components will be skipped.
 const skipList = ["table", "tabs"];
@@ -43,32 +47,41 @@ func (b *${libName}AppBuilder) New${versionName}${upperName}() *${className}Comp
   return template;
 }
 
-const code = ArcoDesignLib.components
-  ?.filter((c) => !skipList.includes(c.metadata.name))
-  .map(format)
-  .join("");
+(async function () {
+  let { K8sLib } = await import("@dovetail-ui/ui/dist/index.js");
 
-console.log(code);
+  K8sLib = K8sLib instanceof Array ? K8sLib[0] : K8sLib;
 
-const fileContent = `
-package ${libName.toLowerCase()}
+  const code = K8sLib.components
+    ?.filter((c) => !skipList.includes(c.metadata.name))
+    .map(format)
+    .join("");
 
-import (
-	"encoding/json"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
-)
+  console.log(code);
 
-type ${libName}AppBuilder struct {
-	*sunmao.AppBuilder
-}
+  const fileContent = `
+  package ${libName.toLowerCase()}
+  
+  import (
+    "encoding/json"
+    "github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
+  )
+  
+  type ${libName}AppBuilder struct {
+    *sunmao.AppBuilder
+  }
+  
+  func New${libName}App(appBuilder *sunmao.AppBuilder) *${libName}AppBuilder {
+    b := &${libName}AppBuilder{
+      appBuilder,
+    }
+    return b
+  }
+  ${code}
+  `;
 
-func New${libName}App(appBuilder *sunmao.AppBuilder) *${libName}AppBuilder {
-	b := &${libName}AppBuilder{
-		appBuilder,
-	}
-	return b
-}
-${code}
-`
-
-fs.writeFileSync("../pkg/sunmao/arco/arcoGenerated.go", fileContent);
+  fs.writeFileSync(
+   "../pkg/dovetail/dovetail.go",
+    fileContent
+  );
+})();

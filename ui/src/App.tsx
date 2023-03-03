@@ -1,6 +1,6 @@
 import { initSunmaoUI } from "@sunmao-ui/runtime";
 import "@sunmao-ui/arco-lib/dist/index.css";
-import 'kui-shadow/dist/style.css';
+import '@dovetail-ui/ui/dist/style.css';
 import {
   getLibs,
   useApiService,

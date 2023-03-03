@@ -5,26 +5,27 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "generate": "node ./gen.js",
+    "generate": "node ./gen.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sunmao-ui/arco-lib": "^0.10.0",
-    "@sunmao-ui/chakra-ui-lib": "^0.10.0",
-    "@sunmao-ui/editor": "^0.10.0",
-    "@sunmao-ui/runtime": "^0.10.0",
+    "@dovetail-ui/ui": "0.3.3",
+    "@sunmao-ui/arco-lib": "^0.10.2",
+    "@sunmao-ui/chakra-ui-lib": "^0.10.2",
+    "@sunmao-ui/editor": "^0.10.2",
     "@sunmao-ui/resolver": "^0.0.2",
+    "@sunmao-ui/runtime": "^0.10.2",
+    "i18next": "^21.9.1",
     "jsondiffpatch": "^0.4.1",
-    "kui-shadow": "0.2.45",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
-    "i18next": "^21.9.1",
     "react-i18next": "^11.18.4"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react": "^1.3.0",
+    "jsdom": "^21.1.0",
     "typescript": "^4.6.3",
     "vite": "^2.9.5"
   }
