@@ -9,12 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dovetail-ui/ui": "0.3.3",
+    "@dovetail-ui/ui": "0.3.4-canary.3",
     "@sunmao-ui/arco-lib": "^0.10.2",
     "@sunmao-ui/chakra-ui-lib": "^0.10.2",
-    "@sunmao-ui/editor": "^0.10.2",
+    "@sunmao-ui/editor": "^0.10.3-canary.1",
     "@sunmao-ui/resolver": "^0.0.2",
-    "@sunmao-ui/runtime": "^0.10.2",
+    "@sunmao-ui/runtime": "^0.10.3-canary.1",
     "i18next": "^21.9.1",
     "jsondiffpatch": "^0.4.1",
     "react": "^17.0.0",

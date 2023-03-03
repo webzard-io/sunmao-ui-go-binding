@@ -1959,10 +1959,10 @@
   resolved "https://registry.npmmirror.com/@ctrl/tinycolor/-/tinycolor-3.6.0.tgz#53fa5fe9c34faee89469e48f91d51a3766108bc8"
   integrity sha512-/Z3l6pXthq0JvMYdUFyX9j0MaCltlIn6mfh9jLyQwg5aPKxkyNa0PTHtU1AlFXLNk55ZuAeJRcpvq+tmLfKmaQ==
 
-"@dovetail-ui/ui@0.3.3":
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/@dovetail-ui/ui/-/ui-0.3.3.tgz#c93842393a483c46acc288003570a2c48a9ff5c8"
-  integrity sha512-M0aKDulDDj3DnUZldeoPjLdC2gFq8MHL9cfrqXJOB03I9xwytmNPqPXScUSWOtv3kccSVaTTofqc4OyqdUibmQ==
+"@dovetail-ui/ui@0.3.4-canary.3":
+  version "0.3.4-canary.3"
+  resolved "https://registry.yarnpkg.com/@dovetail-ui/ui/-/ui-0.3.4-canary.3.tgz#6ecef8d00c40d620e583a470181f2f370cc3897d"
+  integrity sha512-TYThWxvycHPKbZ0LtM10B+dfRA3YOJZgJXNuN8iU1Mpyg9rue97q6TqhBPIGgu/6U0cP4X/odn9BzYC3410C1w==
   dependencies:
     "@ant-design/icons" "^4.7.0"
     "@chakra-ui/react" "1.7.1"
@@ -1973,8 +1973,8 @@
     "@linaria/react" "3.0.0-beta.15"
     "@optum/json-schema-editor" "^2.1.0"
     "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.10.0"
-    "@sunmao-ui/runtime" "^0.10.0"
+    "@sunmao-ui/core" "^0.10.1"
+    "@sunmao-ui/runtime" "^0.10.3-canary.1"
     antd "4.5.0"
     async-validator "3.5.2"
     chakra-react-select "^3.0.0"
@@ -2333,15 +2333,10 @@
     chakra-react-select "^1.3.2"
     framer-motion "^3.10.6"
 
-"@sunmao-ui/core@^0.10.0", "@sunmao-ui/core@^0.10.1":
+"@sunmao-ui/core@^0.10.1":
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/@sunmao-ui/core/-/core-0.10.1.tgz#b2527a061d16420c2afd62468f547f5945d224c7"
   integrity sha512-7OTGrLmT8NY9QGgj/quRcfGIK1Ju2FIHU4QoreVTKz5qbdYwkZqnYLKUhSu2DDkFuCFHjA0dZjjhOscPtEnK5g==
-
-"@sunmao-ui/core@^0.10.0-alpha.0":
-  version "0.10.0"
-  resolved "https://registry.npmmirror.com/@sunmao-ui/core/-/core-0.10.0.tgz#82a81390fac7dd1a10c7259cb817934abb5a50de"
-  integrity sha512-lJYbzjQnTvNIhFEPazt7nRQy3V93YPhHIq2p/8MiiIuoED6/2VO5UVysIQgRbuoW9hUP43FztyHdnEXlZ4R5/A==
 
 "@sunmao-ui/core@^0.8.0":
   version "0.8.1"
@@ -2373,10 +2368,10 @@
     react-color "^2.19.3"
     tern "^0.24.3"
 
-"@sunmao-ui/editor@^0.10.2":
-  version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@sunmao-ui/editor/-/editor-0.10.2.tgz#0547f16aa6fdbf16b452f9952a5073bafd34f67f"
-  integrity sha512-YWsQOWbmisydWVhcWZWfhSUE/kREy/WqZHTmxW3QF9a407IQOaqOmn6g0R8xGvHOBVAqYxVuBrxfWCCppvfz1A==
+"@sunmao-ui/editor@^0.10.3-canary.1":
+  version "0.10.3-canary.1"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/editor/-/editor-0.10.3-canary.1.tgz#649b66366f19cafec66cd0ee5dac34c0f4885da7"
+  integrity sha512-6bghzIgikvbWNkevSeqJtWXILlpzQFDZbFVFWVwfxMgR2vOvEOJ3Bi9aVZSL+5u6u+fSsZuwRrbigQ1yayviTw==
   dependencies:
     "@chakra-ui/icons" "^1.0.15"
     "@chakra-ui/react" "^1.7.1"
@@ -2388,8 +2383,8 @@
     "@sunmao-ui/chakra-ui-lib" "^0.10.2"
     "@sunmao-ui/core" "^0.10.1"
     "@sunmao-ui/editor-sdk" "^0.10.2"
-    "@sunmao-ui/runtime" "^0.10.2"
-    "@sunmao-ui/shared" "^0.5.0-alpha.0"
+    "@sunmao-ui/runtime" "^0.10.3-canary.1"
+    "@sunmao-ui/shared" "^0.10.1"
     acorn "^8.7.0"
     acorn-loose "^8.3.0"
     acorn-walk "^8.2.0"
@@ -2424,28 +2419,6 @@
     react "16.x || 17.x"
     react-dom "16.x || 17.x"
 
-"@sunmao-ui/runtime@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.npmmirror.com/@sunmao-ui/runtime/-/runtime-0.10.0.tgz#75d5224ec8c1054704ff5214fe35dc88bce744c7"
-  integrity sha512-I30WhJIi0AGYADdyLd7+xdOqbt6X9TTPl6omwYxneSzE7jxCGVYAqygCksgokJtHrV2P7GM5cNqV8iuyG+ELLA==
-  dependencies:
-    "@emotion/css" "^11.7.1"
-    "@sinclair/typebox" "^0.21.2"
-    "@sunmao-ui/core" "^0.10.0-alpha.0"
-    "@sunmao-ui/shared" "^0.5.0-alpha.0"
-    "@vue/reactivity" "^3.1.5"
-    "@vue/shared" "^3.2.20"
-    copy-to-clipboard "^3.3.1"
-    dayjs "^1.10.6"
-    immer "^9.0.12"
-    lodash "^4.17.21"
-    mitt "^3.0.0"
-    path-to-regexp "^6.2.0"
-    react-resize-detector "^6.7.6"
-    react-simple-code-editor "^0.11.0"
-    use-deep-compare "^1.1.0"
-    wouter "^2.7.4"
-
 "@sunmao-ui/runtime@^0.10.2":
   version "0.10.2"
   resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.10.2.tgz#1d61a905b23d8719ced7230474860ad353ef5557"
@@ -2467,6 +2440,36 @@
     react-simple-code-editor "^0.11.0"
     use-deep-compare "^1.1.0"
     wouter "^2.7.4"
+
+"@sunmao-ui/runtime@^0.10.3-canary.1":
+  version "0.10.3-canary.1"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/runtime/-/runtime-0.10.3-canary.1.tgz#6638124f351a0f01c8d7f1354b5377c886d0f055"
+  integrity sha512-tdbRBg5QIh3s7pallPuxYfuFgILnLW05Mn7EhglFF1Ky37GiCt3F+zqYqJbWfkjgPw2f0/c19ecqNpc/PdBpQw==
+  dependencies:
+    "@emotion/css" "^11.7.1"
+    "@sinclair/typebox" "^0.21.2"
+    "@sunmao-ui/core" "^0.10.1"
+    "@sunmao-ui/shared" "^0.10.1"
+    "@vue/reactivity" "^3.1.5"
+    "@vue/shared" "^3.2.20"
+    copy-to-clipboard "^3.3.1"
+    dayjs "^1.10.6"
+    immer "^9.0.12"
+    lodash "^4.17.21"
+    mitt "^3.0.0"
+    path-to-regexp "^6.2.0"
+    react-resize-detector "^6.7.6"
+    react-simple-code-editor "^0.11.0"
+    use-deep-compare "^1.1.0"
+    wouter "^2.7.4"
+
+"@sunmao-ui/shared@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@sunmao-ui/shared/-/shared-0.10.1.tgz#f149ede7d3930a52c2f68c8e05385d0be8c0ac7d"
+  integrity sha512-ALw35rMT3zwtly6r4qfYwNu1EcBtt99vAujNwfUKXbPCDDYQ7D6/BAiwlb5w3vrqJ+X0N8HIiYuyfhP+FmAboA==
+  dependencies:
+    "@sinclair/typebox" "^0.21.2"
+    ajv "^8.8.2"
 
 "@sunmao-ui/shared@^0.5.0-alpha.0":
   version "0.5.0-alpha.0"

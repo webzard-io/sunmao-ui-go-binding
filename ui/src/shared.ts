@@ -142,7 +142,10 @@ export function saveApp(app: Application, base: Application) {
       "content-type": "application/json",
     },
     body: JSON.stringify({
-      delta: diffpatcher.diff(base, app),
+      delta: diffpatcher.diff(
+        JSON.parse(JSON.stringify(base)),
+        JSON.parse(JSON.stringify(app))
+      ),
     }),
   });
 }

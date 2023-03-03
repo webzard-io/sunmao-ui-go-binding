@@ -9,7 +9,6 @@ import (
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/dovetail"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao/arco"
 )
 
 func main() {
@@ -17,111 +16,21 @@ func main() {
 	r := runtime.New("ui", "patch")
 	// init an App builder, use a lib
 	app := sunmao.NewApp()
-	b := sunmao.NewChakraUIApp()
+	
 	d := dovetail.NewDovetailApp(app)
-
-	arcoB := arco.NewArcoApp(app)
-
-	// build some UI in code, perfect it in the browser!
-	// more UI
-	app.Component(app.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
-		"content": {
-			app.NewText().Content("呵呵呵"),
-			app.NewText().Content("哈哈哈123"),
-			app.NewText().Content("Hello Sunmao!!!"),
-			arcoB.NewTable(),
-			arcoB.NewButton(),
-		},
-	}).Properties(map[string]interface{}{
-		"direction": "vertical",
-	}))
-	app.Component(d.NewRoot().Children((map[string][]sunmao.BaseComponentBuilder{
+	
+	app.Component(d.NewRoot().Id("root").Children(map[string][]sunmao.BaseComponentBuilder {
 		"root": {
-			d.NewButton(),
-			d.NewKubectlGetTable(),
+			d.NewButton().Id("button"),
+			d.NewKubectlGetTable().Id("kubectl_get_table"),
+			d.NewV2Modal().Id("modal").Children(map[string][]sunmao.BaseComponentBuilder {
+				"content": {
+					d.NewKubectlApplyForm().Id("kubectl_apply_form"),
+				},
+			}),
+			d.NewKubectlGetDetail().Id("kubectl_get_detail"),
 		},
-	})))
-
-	// use server dynamic data
-	entries, _ := os.ReadDir(".")
-	data := []map[string]interface{}{}
-	for _, e := range entries {
-		info, _ := e.Info()
-		data = append(data, map[string]interface{}{
-			"name":    e.Name(),
-			"size":    info.Size(),
-			"modTime": info.ModTime().Format(time.UnixDate),
-			"is_dir":  info.IsDir(),
-		})
-	}
-
-	app.Component(arcoB.NewTable().Data(data).Column(&arco.ArcoTableColumn{
-		DataIndex:    "name",
-		Title:        "Name",
-		Type:         "link",
-		DisplayValue: "{{ $listItem.name }} - {{ $listItem.size }}",
-	}).Column(&arco.ArcoTableColumn{
-		DataIndex: "size",
-		Title:     "File Size",
-	}).Column(&arco.ArcoTableColumn{
-		DataIndex: "modTime",
-		Title:     "Modify Time",
-	}).Column(&arco.ArcoTableColumn{
-		Title:     "Type",
-		DataIndex: "is_dir",
-		Type:      "module",
-		Module: &sunmao.ModuleContainer{
-			Type: "custom/v1/file_type",
-			Properties: map[string]any{
-				"is_dir": "{{ $listItem.is_dir }}",
-			},
-		},
-	}).Hidden("{{ tabs.activeTab != 0 }}"))
-
-	fileTypeModule := sunmao.NewModule().
-		Version("custom/v1").
-		Name("file_type").
-		Properties(map[string]any{
-			"is_dir": "{{false}}",
-		})
-
-	fileTypeB := sunmao.NewApp()
-
-	fileTypeModule.Impl(fileTypeB.Component(fileTypeB.NewStack().Children(map[string][]sunmao.BaseComponentBuilder{
-		"content": {
-			fileTypeB.NewComponent().Type("arco/v1/tag").
-				Properties(map[string]interface{}{
-					"content":        "file",
-					"closable":       false,
-					"checkable":      false,
-					"defaultChecked": false,
-					"color":          "",
-					"size":           "small",
-					"bordered":       false,
-					"defaultVisible": true,
-				}).Hidden("{{!is_dir}}"),
-			fileTypeB.NewComponent().Type("arco/v1/tag").
-				Properties(map[string]interface{}{
-					"content":        "dir",
-					"closable":       false,
-					"checkable":      false,
-					"defaultChecked": false,
-					"color":          "rgba(0,180,42, 1)",
-					"size":           "small",
-					"bordered":       false,
-					"defaultVisible": true,
-				}).Hidden("{{is_dir}}"),
-		},
-	})).ValueOf())
-
-	// use server push real-time data
-	type MyState struct {
-		Random int `json:"random"`
-	}
-	myState := r.NewServerState("server_push", &MyState{})
-	b.Component(myState.AsComponent())
-
-	b.Component(b.NewText().Content("data from server {{ server_push.state.random }}"))
+	}))
 
 	go func() {
 		for {
@@ -156,16 +65,6 @@ func main() {
 		return nil
 	})
 
-	app.Component(b.NewButton().Content("click to debug").
-		OnClick(&sunmao.ServerHandler{
-			Name: "debug",
-			Parameters: map[string]interface{}{
-				// use ID to access component state
-				"dynamic": "input value {{ my_input.value }}",
-			},
-		}))
-
-	r.LoadModule(fileTypeModule)
 	r.LoadApp(app)
 
 	// start the runtime
