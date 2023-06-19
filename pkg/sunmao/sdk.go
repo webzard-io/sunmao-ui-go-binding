@@ -361,36 +361,36 @@ func (b *ChakraUIAppBuilder) Component(builder BaseComponentBuilder) *ChakraUIAp
 
 // -----
 
-type ArcoAppBuilder struct {
-	AppBuilder *AppBuilder
-}
-
-func NewArcoApp() *ArcoAppBuilder {
-	b := &ArcoAppBuilder{
-		AppBuilder: NewApp(),
-	}
-	return b
-}
-
-type ArcoTableComponentBuilder struct {
-	*InnerComponentBuilder[*ArcoTableComponentBuilder]
-}
-
-func (b *ArcoAppBuilder) NewTable() *ArcoTableComponentBuilder {
-	t := &ArcoTableComponentBuilder{
-		InnerComponentBuilder: NewInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
-	}
-	t.Inner = t
-	return t.Type("arco/v1/table").Properties(map[string]interface{}{
-		"pagination": map[string]interface{}{
-			"enablePagination": true,
-			"pageSize":         20,
-		},
-		"rowKey":  "name",
-		"data":    []interface{}{},
-		"columns": []interface{}{},
-	})
-}
+//type ArcoAppBuilder struct {
+//	AppBuilder *AppBuilder
+//}
+//
+//func NewArcoApp() *ArcoAppBuilder {
+//	b := &ArcoAppBuilder{
+//		AppBuilder: NewApp(),
+//	}
+//	return b
+//}
+//
+//type ArcoTableComponentBuilder struct {
+//	*InnerComponentBuilder[*ArcoTableComponentBuilder]
+//}
+//
+//func (b *ArcoAppBuilder) NewTable() *ArcoTableComponentBuilder {
+//	t := &ArcoTableComponentBuilder{
+//		InnerComponentBuilder: NewInnerComponent[*ArcoTableComponentBuilder](b.AppBuilder),
+//	}
+//	t.Inner = t
+//	return t.Type("arco/v1/table").Properties(map[string]interface{}{
+//		"pagination": map[string]interface{}{
+//			"enablePagination": true,
+//			"pageSize":         20,
+//		},
+//		"rowKey":  "name",
+//		"data":    []interface{}{},
+//		"columns": []interface{}{},
+//	})
+//}
 
 // -----
 
