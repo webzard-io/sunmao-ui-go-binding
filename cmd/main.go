@@ -3,13 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/arco"
 	"os"
 	"time"
 
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/dovetail"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao/arco"
 )
 
 func main() {
