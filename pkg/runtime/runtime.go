@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
@@ -25,6 +26,7 @@ type Runtime struct {
 	hooks                    map[string]func(connId int) error
 	uiDir                    string
 	patchDir                 string
+	websocketMutex           sync.Mutex
 }
 
 func New(uiDir string, patchDir string) *Runtime {
@@ -342,6 +344,9 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 		if err != nil {
 			return err
 		}
+
+		r.websocketMutex.Lock()
+		defer r.websocketMutex.Unlock()
 
 		err = ws.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
