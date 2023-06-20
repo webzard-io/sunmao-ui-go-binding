@@ -26,7 +26,8 @@ type Runtime struct {
 	hooks                    map[string]func(connId int) error
 	uiDir                    string
 	patchDir                 string
-	websocketMutex           sync.Mutex
+	websocketWriteMutex      sync.Mutex
+	websocketReadMutex       sync.Mutex
 }
 
 func New(uiDir string, patchDir string) *Runtime {
@@ -269,6 +270,9 @@ func (r *Runtime) Run() {
 		}
 
 		for {
+			r.websocketReadMutex.Lock()
+			defer r.websocketReadMutex.Unlock()
+
 			_, msgBytes, err := ws.ReadMessage()
 			if err != nil {
 				if strings.Contains(err.Error(), "close 1001") {
@@ -345,8 +349,8 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 			return err
 		}
 
-		r.websocketMutex.Lock()
-		defer r.websocketMutex.Unlock()
+		r.websocketWriteMutex.Lock()
+		defer r.websocketWriteMutex.Unlock()
 
 		err = ws.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
