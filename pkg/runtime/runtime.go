@@ -269,10 +269,9 @@ func (r *Runtime) Run() {
 			connectedHook(connId)
 		}
 
+		r.websocketReadMutex.Lock()
+		defer r.websocketReadMutex.Unlock()
 		for {
-			r.websocketReadMutex.Lock()
-			defer r.websocketReadMutex.Unlock()
-
 			_, msgBytes, err := ws.ReadMessage()
 			if err != nil {
 				if strings.Contains(err.Error(), "close 1001") {
