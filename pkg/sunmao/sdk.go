@@ -109,6 +109,11 @@ func (b *AppBuilder) component(builder BaseComponentBuilder) {
 	}
 }
 
+func (b *AppBuilder) RawComponent(componentSchema ComponentSchema) *AppBuilder {
+	b.application.Spec.Components = append(b.application.Spec.Components, componentSchema)
+	return b
+}
+
 type ModuleBuilder struct {
 	*BaseBuilder[*ModuleBuilder]
 	module Module
