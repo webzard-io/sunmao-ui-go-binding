@@ -288,6 +288,14 @@ func (b *InnerComponentBuilder[K]) Event(handlers []EventHandler) K {
 	return b.Inner
 }
 
+func (b *InnerComponentBuilder[K]) State(key string, initialValue interface{}) K {
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/state").Properties(map[string]interface{}{
+		"key":          key,
+		"initialValue": initialValue,
+	}))
+	return b.Inner
+}
+
 // Trait
 
 type BaseTraitBuilder interface {
@@ -353,6 +361,18 @@ func (b *TextComponentBuilder) Content(value string) *TextComponentBuilder {
 			"raw": value,
 		}})
 	return b
+}
+
+type StateComponentBuilder struct {
+	*InnerComponentBuilder[*StateComponentBuilder]
+}
+
+func (b *AppBuilder) NewState(key string, initialValue interface{}) *StateComponentBuilder {
+	t := &StateComponentBuilder{
+		InnerComponentBuilder: NewInnerComponent[*StateComponentBuilder](b),
+	}
+	t.Inner = t
+	return t.Type("core/v1/dummy").State(key, initialValue)
 }
 
 // layer 3
