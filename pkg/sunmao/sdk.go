@@ -263,6 +263,31 @@ func (b *InnerComponentBuilder[K]) Hidden(when string) K {
 	return b.Inner
 }
 
+type EventHandler struct {
+	Type        string      `json:"type"`
+	ComponentId string      `json:"componentId"`
+	Method      EventMethod `json:"method"`
+	Wait        EventWait   `json:"wait,omitempty"`
+	Disabled    interface{} `json:"disabled,omitempty"`
+}
+
+type EventMethod struct {
+	Name       string      `json:"name"`
+	Parameters interface{} `json:"parameters"`
+}
+
+type EventWait struct {
+	Type string      `json:"type"`
+	Time interface{} `json:"time"`
+}
+
+func (b *InnerComponentBuilder[K]) Event(handlers []EventHandler) K {
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/event").Properties(map[string]interface{}{
+		"handlers": handlers,
+	}))
+	return b.Inner
+}
+
 // Trait
 
 type BaseTraitBuilder interface {
