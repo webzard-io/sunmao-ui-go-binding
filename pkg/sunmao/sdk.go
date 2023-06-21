@@ -303,6 +303,19 @@ func (b *InnerComponentBuilder[K]) Transformer(value interface{}) K {
 	return b.Inner
 }
 
+type Container struct {
+	ID   string `json:"id"`
+	Slot string `json:"slot"`
+}
+
+func (b *InnerComponentBuilder[K]) Slot(container Container, ifCondition interface{}) K {
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v2/slot").Properties(map[string]interface{}{
+		"container":   container,
+		"ifCondition": ifCondition,
+	}))
+	return b.Inner
+}
+
 // Trait
 
 type BaseTraitBuilder interface {
