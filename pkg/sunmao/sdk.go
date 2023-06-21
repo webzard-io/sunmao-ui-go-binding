@@ -296,6 +296,13 @@ func (b *InnerComponentBuilder[K]) State(key string, initialValue interface{}) K
 	return b.Inner
 }
 
+func (b *InnerComponentBuilder[K]) Transformer(value interface{}) K {
+	b._Trait(b.AppBuilder.NewTrait().Type("core/v1/transformer").Properties(map[string]interface{}{
+		"value": value,
+	}))
+	return b.Inner
+}
+
 // Trait
 
 type BaseTraitBuilder interface {
@@ -373,6 +380,18 @@ func (b *AppBuilder) NewState(key string, initialValue interface{}) *StateCompon
 	}
 	t.Inner = t
 	return t.Type("core/v1/dummy").State(key, initialValue)
+}
+
+type TransformerComponentBuilder struct {
+	*InnerComponentBuilder[*TransformerComponentBuilder]
+}
+
+func (b *AppBuilder) NewTransformer(value interface{}) *TransformerComponentBuilder {
+	t := &TransformerComponentBuilder{
+		InnerComponentBuilder: NewInnerComponent[*TransformerComponentBuilder](b),
+	}
+	t.Inner = t
+	return t.Type("core/v1/dummy").Transformer(value)
 }
 
 // layer 3
