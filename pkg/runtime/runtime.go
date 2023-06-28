@@ -82,12 +82,12 @@ func (r *Runtime) formatUiOptions() (*string, error) {
 	}
 
 	appBase := patchFile.Base
-	appBaseHash, err := hashstructure.Hash(appBase, nil)
+	appBaseHash, _ := hashstructure.Hash(appBase, nil)
 	currentAppJson, _ := json.Marshal(r.appBuilder.ValueOf())
 	var currentApp sunmao.Application
 
 	json.Unmarshal(currentAppJson, &currentApp)
-	currentAppHash, err := hashstructure.Hash(currentApp, nil)
+	currentAppHash, _ := hashstructure.Hash(currentApp, nil)
 
 	hasBaseAppChanged := appBaseHash != currentAppHash
 	var applicationBase *sunmao.Application = nil
@@ -288,10 +288,7 @@ func (r *Runtime) Run() {
 
 			msg := &Message{}
 
-			err = json.Unmarshal(msgBytes, msg)
-			if err != nil {
-				// ignore
-			}
+			json.Unmarshal(msgBytes, msg)
 
 			if msg.Type == "Action" {
 				handler, ok := r.handlers[msg.Handler]
@@ -356,6 +353,26 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (r *Runtime) Ping(connId *int, p any) error {
+	msg := Message{
+		Type:    "Action",
+		Handler: "Heartbeat",
+		Params:  p,
+		Store:   nil,
+	}
+
+	conn := r.conns[*connId]
+	if conn == nil {
+		return fmt.Errorf("connection lost; client is dead")
+	}
+
+	if err := conn.WriteJSON(msg); err != nil {
+		return err
+	}
+
 	return nil
 }
 
