@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -16,9 +17,15 @@ import (
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/sunmao"
 )
 
+type SyncConnection struct {
+	read  sync.Mutex
+	write sync.Mutex
+	ws    *websocket.Conn
+}
+
 type Runtime struct {
 	e                        *echo.Echo
-	conns                    map[int]*websocket.Conn
+	conns                    map[int]*SyncConnection
 	appBuilder               *sunmao.AppBuilder
 	moduleBuilders           []*sunmao.ModuleBuilder
 	reloadWhenWsDisconnected bool
@@ -26,8 +33,6 @@ type Runtime struct {
 	hooks                    map[string]func(connId int) error
 	uiDir                    string
 	patchDir                 string
-	websocketWriteMutex      sync.Mutex
-	websocketReadMutex       sync.Mutex
 }
 
 func New(uiDir string, patchDir string) *Runtime {
@@ -35,7 +40,7 @@ func New(uiDir string, patchDir string) *Runtime {
 
 	r := &Runtime{
 		e:                        e,
-		conns:                    map[int]*websocket.Conn{},
+		conns:                    map[int]*SyncConnection{},
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message, connId int) error{},
 		hooks:                    map[string]func(connId int) error{},
@@ -253,31 +258,42 @@ func (r *Runtime) Run() {
 	connId := 0
 
 	r.e.GET("/ws", func(c echo.Context) error {
-		ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
+		connId++
+		cId := connId
+
+		ws, err := upgrader.Upgrade(c.Response(), c.Request(), http.Header{
+			"X-Conn-Id": []string{strconv.Itoa(cId)},
+		})
 		if err != nil {
 			return err
 		}
-		connId++
-		r.conns[connId] = ws
+
+		conn := &SyncConnection{
+			ws:    ws,
+			read:  sync.Mutex{},
+			write: sync.Mutex{},
+		}
+		r.conns[cId] = conn
+
 		defer func() {
-			delete(r.conns, connId)
+			delete(r.conns, cId)
 			ws.Close()
 		}()
 
 		connectedHook, ok := r.hooks["connected"]
 		if ok {
-			connectedHook(connId)
+			connectedHook(cId)
 		}
 
-		r.websocketReadMutex.Lock()
-		defer r.websocketReadMutex.Unlock()
+		conn.read.Lock()
+		defer conn.read.Unlock()
 		for {
 			_, msgBytes, err := ws.ReadMessage()
 			if err != nil {
 				if strings.Contains(err.Error(), "close 1001") {
 					disconnectedHook, ok := r.hooks["disconnected"]
 					if ok {
-						disconnectedHook(connId)
+						disconnectedHook(cId)
 					}
 
 					break
@@ -293,7 +309,7 @@ func (r *Runtime) Run() {
 			if msg.Type == "Action" {
 				handler, ok := r.handlers[msg.Handler]
 				if ok {
-					handler(msg, connId)
+					handler(msg, cId)
 				}
 			}
 		}
@@ -330,7 +346,7 @@ type ExecuteTarget struct {
 
 // maybe this is a bad idea, but currently we let connId == nil to represent broadcasting
 func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
-	for id, ws := range r.conns {
+	for id, conn := range r.conns {
 		if connId != nil && id != *connId {
 			continue
 		}
@@ -345,10 +361,10 @@ func (r *Runtime) Execute(target *ExecuteTarget, connId *int) error {
 			return err
 		}
 
-		r.websocketWriteMutex.Lock()
-		defer r.websocketWriteMutex.Unlock()
+		conn.write.Lock()
+		defer conn.write.Unlock()
 
-		err = ws.WriteMessage(websocket.TextMessage, msg)
+		err = conn.ws.WriteMessage(websocket.TextMessage, msg)
 		if err != nil {
 			return err
 		}
@@ -369,7 +385,7 @@ func (r *Runtime) Ping(connId *int, p any) error {
 		return fmt.Errorf("connection lost; client is dead")
 	}
 
-	if err := conn.WriteJSON(msg); err != nil {
+	if err := conn.ws.WriteJSON(msg); err != nil {
 		return err
 	}
 
