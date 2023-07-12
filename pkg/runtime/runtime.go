@@ -385,6 +385,9 @@ func (r *Runtime) Ping(connId *int, p any) error {
 		return fmt.Errorf("connection lost; client is dead")
 	}
 
+	conn.write.Lock()
+	defer conn.write.Unlock()
+
 	if err := conn.ws.WriteJSON(msg); err != nil {
 		return err
 	}
