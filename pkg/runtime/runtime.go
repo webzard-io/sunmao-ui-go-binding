@@ -3,6 +3,8 @@ package runtime
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -31,11 +33,11 @@ type Runtime struct {
 	reloadWhenWsDisconnected bool
 	handlers                 map[string]func(m *Message, connId int) error
 	hooks                    map[string]func(connId int) error
-	uiDir                    string
+	uiFS                     fs.FS
 	patchDir                 string
 }
 
-func New(uiDir string, patchDir string) *Runtime {
+func New(uiFS fs.FS, patchDir string) *Runtime {
 	e := echo.New()
 
 	r := &Runtime{
@@ -44,7 +46,7 @@ func New(uiDir string, patchDir string) *Runtime {
 		reloadWhenWsDisconnected: true,
 		handlers:                 map[string]func(m *Message, connId int) error{},
 		hooks:                    map[string]func(connId int) error{},
-		uiDir:                    uiDir,
+		uiFS:                     uiFS,
 		patchDir:                 patchDir,
 	}
 
@@ -141,10 +143,19 @@ func (r *Runtime) Run() {
 
 	r.e.Use(middleware.Gzip())
 
-	r.e.Static("/assets", fmt.Sprintf("%v/dist/assets", r.uiDir))
+	// r.e.Static("/assets", fmt.Sprintf("%v/dist/assets", r.uiFS))
+	assets, err := fs.Sub(r.uiFS, "assets")
+	if err != nil {
+		log.Fatalln("assets folder does not exist")
+	}
+	r.e.StaticFS("/assets", assets)
 
 	r.e.GET("/", func(c echo.Context) error {
-		buf, err := os.ReadFile(fmt.Sprintf("%v/dist/index.html", r.uiDir))
+		f, err := r.uiFS.Open("index.html")
+		if err != nil {
+			return err
+		}
+		buf, err := io.ReadAll(f)
 		if err != nil {
 			return err
 		}
@@ -161,7 +172,11 @@ func (r *Runtime) Run() {
 	})
 
 	r.e.GET("/editor", func(c echo.Context) error {
-		buf, err := os.ReadFile(fmt.Sprintf("%v/dist/editor.html", r.uiDir))
+		f, err := r.uiFS.Open("editor.html")
+		if err != nil {
+			return err
+		}
+		buf, err := io.ReadAll(f)
 		if err != nil {
 			return err
 		}
