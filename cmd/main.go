@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/arco"
 	"os"
 	"time"
+
+	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/arco"
 
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/dovetail"
 	"github.com/yuyz0112/sunmao-ui-go-binding/pkg/runtime"
@@ -14,7 +15,7 @@ import (
 
 func main() {
 	// init the runtime
-	r := runtime.New("ui", "patch")
+	r := runtime.New(os.DirFS("ui/dist"), "patch")
 	// init an App builder, use a lib
 	app := sunmao.NewApp()
 	b := sunmao.NewChakraUIApp()
