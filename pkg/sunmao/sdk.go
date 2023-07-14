@@ -545,3 +545,21 @@ func (b *ChakraLinkComponentBuilder) Content(value string) *ChakraLinkComponentB
 		}})
 	return b
 }
+
+type FileInputBuilder struct {
+	*InnerComponentBuilder[*FileInputBuilder]
+}
+
+type FileInputProperties struct {
+	Multiple         bool     `json:"multiple"`
+	HideDefaultInput bool     `json:"hideDefaultInput"`
+	FileTypes        []string `json:"fileTypes"`
+}
+
+func (b *AppBuilder) NewFileInput() *FileInputBuilder {
+	t := &FileInputBuilder{
+		InnerComponentBuilder: NewInnerComponent[*FileInputBuilder](b),
+	}
+	t.Inner = t
+	return t.Type("core/v1/fileInput")
+}
